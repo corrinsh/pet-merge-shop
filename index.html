@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>萌宠合成店</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:linear-gradient(180deg,#FFF9F2 0%,#FFE8D6 60%,#FFDCC4 100%);color:#5D4037;user-select:none;position:relative}
+
+/* ===== 背景装饰 ===== */
+.bg-clouds{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.cloud{position:absolute;background:rgba(255,255,255,.6);border-radius:50px;filter:blur(2px);animation:drift linear infinite}
+.cloud:nth-child(1){width:120px;height:50px;top:8%;animation-duration:40s}
+.cloud:nth-child(2){width:80px;height:35px;top:20%;animation-duration:55s;animation-delay:-15s}
+.cloud:nth-child(3){width:100px;height:42px;top:55%;animation-duration:48s;animation-delay:-30s}
+.cloud:nth-child(4){width:60px;height:28px;top:72%;animation-duration:60s;animation-delay:-8s}
+@keyframes drift{from{transform:translateX(-150px)}to{transform:translateX(calc(100vw + 150px))}}
+
+.bg-petals{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.petal{position:absolute;width:12px;height:12px;background:radial-gradient(circle,#FFCDD2,#F8BBD0);border-radius:0 12px 0 12px;opacity:.5;animation:fall linear infinite}
+.petal:nth-child(1){left:10%;animation-duration:12s}
+.petal:nth-child(2){left:30%;animation-duration:18s;animation-delay:-5s}
+.petal:nth-child(3){left:55%;animation-duration:15s;animation-delay:-3s}
+.petal:nth-child(4){left:75%;animation-duration:20s;animation-delay:-10s}
+.petal:nth-child(5){left:88%;animation-duration:14s;animation-delay:-7s}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:.5}80%{opacity:.4}100%{transform:translateY(105vh) rotate(360deg);opacity:0}}
+
+/* ===== 通用 ===== */
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;transition:opacity .3s}
+.screen.hidden{opacity:0;pointer-events:none}
+.btn{border:none;cursor:pointer;font-family:inherit;transition:transform .1s,box-shadow .2s}
+.btn:active{transform:scale(.95)}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(93,64,55,.88);color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ===== 菜单 ===== */
+#screen-menu{overflow-y:auto;padding:20px 16px}
+.menu-title{text-align:center;margin:20px 0 8px}
+.menu-title .logo{font-size:28px;font-weight:800;color:#E65100;letter-spacing:2px;text-shadow:0 2px 0 rgba(255,138,101,.2)}
+.menu-title .sub{font-size:12px;color:#8D6E63;margin-top:4px}
+.menu-mascot{text-align:center;margin:10px 0}
+.menu-mascot svg{width:80px;height:80px}
+.chapter-card{background:rgba(255,255,255,.85);border-radius:20px;margin-bottom:14px;padding:14px;box-shadow:0 4px 12px rgba(255,138,101,.1);border:2px solid #FFE0B2}
+.chapter-card.locked{opacity:.5;filter:grayscale(.5)}
+.ch-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ch-icon{font-size:22px}
+.ch-name{font-size:16px;font-weight:700;color:#5D4037;flex:1}
+.ch-stars{font-size:12px;color:#FF8F00;font-weight:600}
+.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lv-btn{aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .1s;position:relative}
+.lv-btn.unlocked{background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border:2px solid #FFCC80}
+.lv-btn.unlocked:active{transform:scale(.92)}
+.lv-btn.locked{background:#F5E6D3;opacity:.5}
+.lv-btn .lb-id{font-size:11px;font-weight:700;color:#BF360C}
+.lv-btn .lb-stars{font-size:10px;margin-top:2px;line-height:1}
+.lv-btn .lb-stars .s{color:#FFD700}
+.lv-btn .lb-stars .e{color:#E0E0E0}
+.lv-btn.boss{background:linear-gradient(135deg,#FFCDD2,#F8BBD0);border-color:#EF9A9A}
+.lv-btn .lb-lock{font-size:18px;opacity:.4}
+
+/* ===== 游戏画面 ===== */
+#screen-game{display:flex;flex-direction:column}
+.game-header{background:rgba(255,255,255,.9);backdrop-filter:blur(8px);padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #FFE0B2;flex-shrink:0}
+.gh-back{font-size:20px;color:#8D6E63;cursor:pointer;background:none;border:none;padding:4px 8px}
+.gh-info{flex:1;text-align:center}
+.gh-info .lvl{font-size:14px;font-weight:700;color:#E65100}
+.gh-info .ch{font-size:11px;color:#8D6E63}
+.gh-badge{display:flex;align-items:center;gap:4px;background:#FFF3E0;border-radius:16px;padding:4px 12px;border:2px solid #FFCC80}
+.gh-badge .ico{font-size:14px}
+.gh-badge .val{font-size:15px;font-weight:700;color:#E65100}
+.gh-badge.steps{background:#FFF8E8}
+.gh-badge.steps .val{color:#E65100}
+.gh-badge.steps.low .val{color:#D32F2F}
+
+/* 订单面板 */
+.order-panel{background:rgba(255,255,255,.92);margin:8px 12px;border-radius:18px;padding:12px 14px;box-shadow:0 2px 10px rgba(255,138,101,.08);border:2px solid #FFE0B2;flex-shrink:0}
+.order-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.order-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#FFE0B2,#FFCC80);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.order-text{flex:1}
+.order-text .who{font-size:12px;color:#8D6E63}
+.order-text .want{font-size:13px;font-weight:600;color:#5D4037}
+.order-goals{display:flex;gap:8px;flex-wrap:wrap}
+.goal-item{display:flex;align-items:center;gap:4px;background:#FFF8E8;border-radius:12px;padding:4px 10px;border:2px solid #FFE0B2}
+.goal-item.done{background:#E8F5E9;border-color:#A5D6A7}
+.goal-item .gi-pet{width:28px;height:28px}
+.goal-item .gi-count{font-size:14px;font-weight:700;color:#5D4037}
+.goal-item.done .gi-count{color:#2E7D32}
+.goal-item .gi-check{font-size:14px;color:#66BB6A}
+
+/* 棋盘 */
+.board-wrap{flex:1;overflow-y:auto;padding:8px 12px;display:flex;align-items:center;justify-content:center}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px;width:100%}
+.slot{aspect-ratio:1;border-radius:18px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:transform .12s,box-shadow .2s}
+.slot.empty{background:rgba(255,255,255,.35);border:2px dashed #FFCCBC}
+.slot.empty::after{content:"";width:6px;height:6px;border-radius:50%;background:#FFCCBC;opacity:.3}
+.slot.pet{background:linear-gradient(145deg,#FFFFFF,#FFF8F0);border:2px solid #FFE0B2;box-shadow:0 2px 8px rgba(255,138,101,.1)}
+.slot.pet svg{width:80%;height:80%;pointer-events:none}
+.slot .lv-badge{position:absolute;bottom:3px;right:5px;font-size:9px;font-weight:700;color:#fff;background:rgba(216,96,0,.8);border-radius:8px;padding:1px 5px}
+.slot.sel{border-color:#FF8A65;box-shadow:0 0 0 3px rgba(255,138,101,.25),0 4px 12px rgba(255,138,101,.2);transform:scale(1.04)}
+.slot.goal-glow{border-color:#66BB6A;box-shadow:0 0 0 3px rgba(102,187,106,.3),0 2px 12px rgba(102,187,106,.15)}
+.slot.merge-in{animation:popIn .4s ease}
+@keyframes popIn{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+/* 操作栏 */
+.action-bar{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:10px 12px 14px;border-top:2px solid #FFE0B2;display:flex;gap:8px;flex-shrink:0}
+.ab-btn{flex:1;border:none;border-radius:16px;padding:10px 4px;font-size:12px;font-weight:600;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.2;transition:transform .1s;position:relative}
+.ab-btn:active{transform:scale(.94)}
+.ab-btn .ico{font-size:18px}
+.ab-btn .sub{font-size:10px;font-weight:400;opacity:.8}
+.ab-btn.buy{background:linear-gradient(135deg,#FFE082,#FFCA28);color:#5D4037;border:2px solid #FFB300}
+.ab-btn.deliver{background:linear-gradient(135deg,#A5D6A7,#66BB6A);color:#1B5E20;border:2px solid #43A047}
+.ab-btn.deliver.ready{animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(102,187,106,.5)}50%{box-shadow:0 0 0 8px rgba(102,187,106,0)}}
+.ab-btn.deliver.disabled{background:#E8E0D0;color:#A09080;border-color:#D0C8B8}
+.ab-btn.ad{background:linear-gradient(135deg,#CE93D8,#BA68C8);color:#4A148C;border:2px solid #AB47BC}
+.ab-btn:disabled{opacity:.5;filter:grayscale(.3)}
+.ab-btn.hidden{display:none}
+
+/* ===== 弹窗 ===== */
+.overlay{position:fixed;inset:0;background:rgba(93,64,55,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.show{opacity:1;pointer-events:auto}
+.ov-card{background:linear-gradient(180deg,#FFFBF5,#FFF4E8);border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2);width:min(340px,86%);border:3px solid #FFE0B2}
+
+/* 结果弹窗 */
+.result-title{font-size:22px;font-weight:800;margin-bottom:6px}
+.result-title.win{color:#E65100}
+.result-title.lose{color:#D32F2F}
+.result-sub{font-size:13px;color:#8D6E63;margin-bottom:16px}
+.star-row{display:flex;justify-content:center;gap:12px;margin:16px 0}
+.star-slot{width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#E0E0E0;transition:all .3s}
+.star-slot.on{color:#FFD700;text-shadow:0 0 12px rgba(255,215,0,.5);animation:starPop .4s ease}
+@keyframes starPop{0%{transform:scale(0) rotate(-180deg)}60%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+.result-reward{font-size:14px;color:#5D4037;margin:8px 0 16px}
+.result-reward .coins{font-size:22px;font-weight:700;color:#FF8F00}
+.ov-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ov-btn{border:none;border-radius:14px;padding:12px 20px;font-size:14px;font-weight:600;font-family:inherit;transition:transform .1s}
+.ov-btn:active{transform:scale(.93)}
+.ov-btn.primary{background:linear-gradient(135deg,#FF8A65,#FF7043);color:#fff;border:2px solid #E65100}
+.ov-btn.secondary{background:#FFF3E0;color:#8D6E63;border:2px solid #FFCC80}
+.ov-btn.ad{background:linear-gradient(135deg,#CE93D8,#BA68C8);color:#fff;border:2px solid #AB47BC}
+
+/* 剧情弹窗 */
+.story-ch{font-size:18px;font-weight:700;color:#E65100;margin-bottom:4px}
+.story-icon{font-size:40px;margin-bottom:8px}
+.story-text{font-size:14px;color:#5D4037;line-height:1.7;margin:12px 0 20px;text-align:left}
+
+/* 广告弹窗 */
+.ad-card .ad-title{font-size:16px;font-weight:600;color:#5D4037;margin-bottom:8px}
+.ad-card .ad-count{font-size:42px;font-weight:800;color:#FF8A65;margin:8px 0}
+.ad-card .ad-tip{font-size:11px;color:#BCAAA4;margin-bottom:14px}
+.ad-card .ad-skip{font-size:14px;font-weight:600;color:#fff;background:linear-gradient(135deg,#FF8A65,#FF7043);border:none;border-radius:14px;padding:10px 24px;cursor:pointer;font-family:inherit}
+.ad-card .ad-skip:disabled{background:#B0AAA0}
+
+/* 粒子 */
+.particle{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:150;animation:particleFly .6s ease-out forwards}
+@keyframes particleFly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
+
+.float-coin{position:fixed;pointer-events:none;font-size:16px;font-weight:700;color:#FF8F00;text-shadow:0 1px 3px rgba(0,0,0,.15);animation:floatUp .9s ease forwards;z-index:150}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-50px);opacity:0}}
+
+.hint{text-align:center;font-size:11px;color:#BCAAA4;padding:4px 0}
+</style>
+</head>
+<body>
+
+<div class="bg-clouds"><div class="cloud"></div><div class="cloud"></div><div class="cloud"></div><div class="cloud"></div></div>
+<div class="bg-petals"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div>
+
+<!-- 菜单 -->
+<div id="screen-menu" class="screen">
+  <div class="menu-mascot" id="menuMascot"></div>
+  <div class="menu-title"><div class="logo">萌宠合成店</div><div class="sub">合成萌宠 · 完成订单 · 收集图鉴</div></div>
+  <div id="chapterList" style="margin-top:16px"></div>
+</div>
+
+<!-- 游戏画面 -->
+<div id="screen-game" class="screen hidden">
+  <div class="game-header">
+    <button class="gh-back" id="btnBack">←</button>
+    <div class="gh-info">
+      <div class="lvl" id="ghLevel">1-1</div>
+      <div class="ch" id="ghChapter">开业大吉</div>
+    </div>
+    <div class="gh-badge steps" id="ghSteps"><span class="ico">🎯</span><span class="val" id="ghStepsVal">5</span></div>
+    <div class="gh-badge" id="ghCoins"><span class="ico">💰</span><span class="val" id="ghCoinsVal">0</span></div>
+  </div>
+  <div class="order-panel">
+    <div class="order-top">
+      <div class="order-avatar" id="orderAvatar">👧</div>
+      <div class="order-text">
+        <div class="who" id="orderWho">小女孩</div>
+        <div class="want" id="orderWant">我想要可爱的萌宠！</div>
+      </div>
+    </div>
+    <div class="order-goals" id="orderGoals"></div>
+  </div>
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+  <div class="action-bar" id="actionBar">
+    <button class="ab-btn buy" id="btnBuy"><span class="ico">🥚</span>买蛋<span class="sub" id="btnBuySub">10💰</span></button>
+    <button class="ab-btn deliver disabled" id="btnDeliver"><span class="ico">📦</span>完成订单<span class="sub">需凑齐萌宠</span></button>
+    <button class="ab-btn ad hidden" id="btnAdEgg"><span class="ico">📺</span>免费蛋<span class="sub" id="btnAdEggSub">看广告</span></button>
+    <button class="ab-btn ad hidden" id="btnAdSteps"><span class="ico">📺</span>+5步<span class="sub" id="btnAdStepsSub">看广告</span></button>
+  </div>
+</div>
+
+<!-- 结果弹窗 -->
+<div class="overlay" id="ovResult">
+  <div class="ov-card">
+    <div class="result-title" id="resultTitle">订单完成！</div>
+    <div class="result-sub" id="resultSub"></div>
+    <div class="star-row" id="starRow"></div>
+    <div class="result-reward" id="resultReward"></div>
+    <div class="ov-btns" id="resultBtns"></div>
+  </div>
+</div>
+
+<!-- 剧情弹窗 -->
+<div class="overlay" id="ovStory">
+  <div class="ov-card">
+    <div class="story-icon" id="storyIcon">🏪</div>
+    <div class="story-ch" id="storyCh">第一章 · 开业大吉</div>
+    <div class="story-text" id="storyText"></div>
+    <button class="ov-btn primary" id="storyStart">开始营业</button>
+  </div>
+</div>
+
+<!-- 广告弹窗 -->
+<div class="overlay" id="ovAd">
+  <div class="ov-card ad-card">
+    <div class="ad-title">广告播放中…</div>
+    <div class="ad-count" id="adCount">3</div>
+    <div class="ad-tip">（原型模拟广告，上线后接入真实激励视频 SDK）</div>
+    <button class="ad-skip" id="adSkip" disabled>跳过广告</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   关卡数据（66 关，来自生成器配表）
+   g=goal[[lv,count]], b=board{lv:count}, co=coins, s=steps
+   s2/s3=星级阈值(剩余步数比例), ad={ps:plusSteps,fe:freeEgg,dr:doubleReward,hp:halfPrice}
+   ============================================================ */
+var LEVELS=[
+/* Ch1 开业大吉 */
+{id:"1-1",ch:1,cn:"开业大吉",t:"T1",g:[{l:2,c:1}],b:{1:2},co:0,s:5,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-2",ch:1,cn:"开业大吉",t:"T2",g:[{l:2,c:1}],b:{1:2},co:0,s:5,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-3",ch:1,cn:"开业大吉",t:"T3",g:[{l:3,c:1}],b:{2:2},co:0,s:5,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-4",ch:1,cn:"开业大吉",t:"N",g:[{l:2,c:2}],b:{1:3},co:12,s:6,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-5",ch:1,cn:"开业大吉",t:"N",g:[{l:2,c:1}],b:{1:1},co:12,s:5,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-6",ch:1,cn:"开业大吉",t:"D",g:[{l:2,c:1},{l:2,c:3}],b:{1:6},co:30,s:12,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-7",ch:1,cn:"开业大吉",t:"V",g:[{l:2,c:2}],b:{1:4},co:0,s:5,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-8",ch:1,cn:"开业大吉",t:"F",g:[{l:2,c:2}],b:{1:4},co:0,s:5,s2:.25,s3:.45,ad:{dr:1,ps:3}},
+{id:"1-9",ch:1,cn:"开业大吉",t:"N",g:[{l:2,c:1}],b:{1:1},co:12,s:5,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-10",ch:1,cn:"开业大吉",t:"D",g:[{l:2,c:1},{l:2,c:1}],b:{1:3},co:12,s:6,s2:.25,s3:.45,ad:{ps:5,fe:1}},
+{id:"1-11",ch:1,cn:"开业大吉",t:"B",g:[{l:3,c:1},{l:2,c:2}],b:{2:2,1:6},co:0,s:10,s2:.25,s3:.45,ad:{ps:5,fe:1,hp:1}},
+/* Ch2 奇怪客人 */
+{id:"2-1",ch:2,cn:"奇怪客人",t:"N",g:[{l:3,c:1}],b:{2:1,1:2},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-2",ch:2,cn:"奇怪客人",t:"N",g:[{l:3,c:2}],b:{2:2,1:4},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-3",ch:2,cn:"奇怪客人",t:"V",g:[{l:3,c:2}],b:{2:2,1:4},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-4",ch:2,cn:"奇怪客人",t:"N",g:[{l:3,c:2}],b:{2:2,1:4},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-5",ch:2,cn:"奇怪客人",t:"D",g:[{l:3,c:1},{l:2,c:2}],b:{2:1,1:5},co:12,s:9,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-6",ch:2,cn:"奇怪客人",t:"F",g:[{l:2,c:2}],b:{1:3},co:12,s:7,s2:.28,s3:.48,ad:{dr:1,ps:3}},
+{id:"2-7",ch:2,cn:"奇怪客人",t:"N",g:[{l:3,c:1}],b:{2:1,1:2},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-8",ch:2,cn:"奇怪客人",t:"D",g:[{l:3,c:1},{l:2,c:2}],b:{2:1,1:5},co:12,s:9,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-9",ch:2,cn:"奇怪客人",t:"V",g:[{l:3,c:2}],b:{2:2,1:4},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-10",ch:2,cn:"奇怪客人",t:"N",g:[{l:3,c:2}],b:{2:2,1:4},co:0,s:7,s2:.28,s3:.48,ad:{ps:5,fe:1}},
+{id:"2-11",ch:2,cn:"奇怪客人",t:"B",g:[{l:4,c:1},{l:3,c:2}],b:{3:1,2:6,1:4},co:0,s:14,s2:.28,s3:.48,ad:{ps:5,fe:1,hp:1}},
+/* Ch3 森林秘境 */
+{id:"3-1",ch:3,cn:"森林秘境",t:"N",g:[{l:4,c:1}],b:{3:1,2:2},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-2",ch:3,cn:"森林秘境",t:"V",g:[{l:4,c:3}],b:{3:2,2:8},co:0,s:11,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-3",ch:3,cn:"森林秘境",t:"N",g:[{l:4,c:1}],b:{3:1,2:2},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-4",ch:3,cn:"森林秘境",t:"D",g:[{l:4,c:1},{l:3,c:1}],b:{3:1,2:3,1:2},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-5",ch:3,cn:"森林秘境",t:"N",g:[{l:4,c:1}],b:{3:1,2:2},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-6",ch:3,cn:"森林秘境",t:"F",g:[{l:3,c:2}],b:{2:1,1:6},co:0,s:9,s2:.31,s3:.51,ad:{dr:1,ps:3}},
+{id:"3-7",ch:3,cn:"森林秘境",t:"V",g:[{l:4,c:2}],b:{3:1,2:6},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-8",ch:3,cn:"森林秘境",t:"N",g:[{l:4,c:2}],b:{3:1,2:6},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-9",ch:3,cn:"森林秘境",t:"D",g:[{l:4,c:1},{l:3,c:3}],b:{3:1,2:5,1:6},co:0,s:13,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-10",ch:3,cn:"森林秘境",t:"N",g:[{l:4,c:2}],b:{3:1,2:6},co:0,s:9,s2:.31,s3:.51,ad:{ps:5,fe:1}},
+{id:"3-11",ch:3,cn:"森林秘境",t:"B",g:[{l:5,c:1},{l:4,c:2}],b:{4:1,3:5,2:6},co:0,s:14,s2:.31,s3:.51,ad:{ps:5,fe:1,hp:1}},
+/* Ch4 都市分店 */
+{id:"4-1",ch:4,cn:"都市分店",t:"N",g:[{l:5,c:1}],b:{3:4},co:0,s:11,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-2",ch:4,cn:"都市分店",t:"D",g:[{l:5,c:1},{l:4,c:2}],b:{3:5,2:6},co:0,s:12,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-3",ch:4,cn:"都市分店",t:"V",g:[{l:5,c:2}],b:{4:1,3:6},co:0,s:11,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-4",ch:4,cn:"都市分店",t:"N",g:[{l:5,c:2}],b:{4:1,3:6},co:0,s:11,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-5",ch:4,cn:"都市分店",t:"D",g:[{l:5,c:1},{l:4,c:2}],b:{3:5,2:6},co:0,s:12,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-6",ch:4,cn:"都市分店",t:"F",g:[{l:4,c:2}],b:{3:1,2:6},co:0,s:11,s2:.34,s3:.54,ad:{dr:1,ps:3}},
+{id:"4-7",ch:4,cn:"都市分店",t:"V",g:[{l:5,c:2}],b:{4:1,3:6},co:0,s:11,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-8",ch:4,cn:"都市分店",t:"N",g:[{l:5,c:2}],b:{4:1,3:6},co:0,s:11,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-9",ch:4,cn:"都市分店",t:"D",g:[{l:5,c:1},{l:4,c:3}],b:{3:8,2:4},co:0,s:12,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-10",ch:4,cn:"都市分店",t:"N",g:[{l:5,c:2}],b:{4:1,3:6},co:0,s:11,s2:.34,s3:.54,ad:{ps:5,fe:1}},
+{id:"4-11",ch:4,cn:"都市分店",t:"B",g:[{l:6,c:1},{l:5,c:2}],b:{4:8,3:4},co:0,s:14,s2:.34,s3:.54,ad:{ps:5,fe:1,hp:1}},
+/* Ch5 云端牧场 */
+{id:"5-1",ch:5,cn:"云端牧场",t:"N",g:[{l:6,c:1}],b:{4:4},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-2",ch:5,cn:"云端牧场",t:"V",g:[{l:6,c:3}],b:{5:1,4:10},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-3",ch:5,cn:"云端牧场",t:"D",g:[{l:6,c:1},{l:5,c:3}],b:{4:8,3:4},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-4",ch:5,cn:"云端牧场",t:"N",g:[{l:6,c:2}],b:{5:1,4:6},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-5",ch:5,cn:"云端牧场",t:"V",g:[{l:6,c:2}],b:{5:1,4:6},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-6",ch:5,cn:"云端牧场",t:"F",g:[{l:5,c:2}],b:{4:1,3:6},co:0,s:13,s2:.37,s3:.57,ad:{dr:1,ps:3}},
+{id:"5-7",ch:5,cn:"云端牧场",t:"D",g:[{l:6,c:1},{l:5,c:1}],b:{4:4,3:4},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-8",ch:5,cn:"云端牧场",t:"N",g:[{l:6,c:2}],b:{5:1,4:6},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-9",ch:5,cn:"云端牧场",t:"V",g:[{l:6,c:2}],b:{5:1,4:6},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-10",ch:5,cn:"云端牧场",t:"D",g:[{l:6,c:1},{l:5,c:1}],b:{4:4,3:4},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1}},
+{id:"5-11",ch:5,cn:"云端牧场",t:"B",g:[{l:7,c:1},{l:6,c:2}],b:{5:8,4:4},co:0,s:13,s2:.37,s3:.57,ad:{ps:5,fe:1,hp:1}},
+/* Ch6 传说之巅 */
+{id:"6-1",ch:6,cn:"传说之巅",t:"N",g:[{l:7,c:1}],b:{5:4},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-2",ch:6,cn:"传说之巅",t:"D",g:[{l:7,c:1},{l:6,c:2}],b:{5:4,4:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-3",ch:6,cn:"传说之巅",t:"V",g:[{l:7,c:2}],b:{5:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-4",ch:6,cn:"传说之巅",t:"N",g:[{l:7,c:2}],b:{5:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-5",ch:6,cn:"传说之巅",t:"D",g:[{l:7,c:1},{l:6,c:2}],b:{5:4,4:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-6",ch:6,cn:"传说之巅",t:"F",g:[{l:6,c:2}],b:{4:8},co:0,s:15,s2:.4,s3:.6,ad:{dr:1,ps:3}},
+{id:"6-7",ch:6,cn:"传说之巅",t:"V",g:[{l:7,c:2}],b:{5:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-8",ch:6,cn:"传说之巅",t:"D",g:[{l:7,c:1},{l:6,c:2}],b:{5:4,4:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-9",ch:6,cn:"传说之巅",t:"V",g:[{l:7,c:2}],b:{5:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-10",ch:6,cn:"传说之巅",t:"D",g:[{l:7,c:1},{l:6,c:2}],b:{5:4,4:8},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1}},
+{id:"6-11",ch:6,cn:"传说之巅",t:"B",g:[{l:8,c:1},{l:7,c:2}],b:{6:8,5:4},co:0,s:15,s2:.4,s3:.6,ad:{ps:5,fe:1,hp:1}},
+];
+
+/* ============================================================
+   萌宠图鉴配置
+   ============================================================ */
+var SPECIES=[
+ {name:"宠物蛋",body:"#FFF8E7",ear:"none",accent:"#D4C4A8",face:"egg",rare:false,emoji:"🥚"},
+ {name:"小鸡",body:"#FFD54F",ear:"tuft",accent:"#FF9800",face:"beak",rare:false,emoji:"🐤"},
+ {name:"小鸭",body:"#FFE082",ear:"none",accent:"#FFB74D",face:"bill",rare:false,emoji:"🦆"},
+ {name:"兔兔",body:"#F8BBD0",ear:"long",accent:"#EC407A",face:"bunny",rare:false,emoji:"🐰"},
+ {name:"猫猫",body:"#FFCC80",ear:"tri",accent:"#EF6C00",face:"whisk",rare:false,emoji:"🐱"},
+ {name:"狗狗",body:"#BCAAA4",ear:"flop",accent:"#6D4C41",face:"nose",rare:false,emoji:"🐶"},
+ {name:"熊猫",body:"#FFFFFF",ear:"tri",accent:"#37474F",face:"panda",rare:false,emoji:"🐼"},
+ {name:"麒麟",body:"#FFD700",ear:"tri",accent:"#FF6F00",face:"horn",rare:true,emoji:"🦄"},
+];
+
+/* 买蛋价格: 10 * 1.5^(n-1) */
+function buyPrice(n){return Math.round(10*Math.pow(1.5,n-1))}
+
+/* ============================================================
+   宠物 SVG 绘制（日系治愈风，大眼+腮红+细节）
+   ============================================================ */
+function petSVG(lv){
+  var s=SPECIES[lv-1], W=100, H=100;
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  /* 阴影 */
+  svg+='<ellipse cx="50" cy="90" rx="22" ry="4" fill="rgba(93,64,55,0.12)"/>';
+  /* 耳朵(画在身体后) */
+  if(s.ear==="long"){
+    svg+='<ellipse cx="36" cy="28" rx="9" ry="22" fill="'+s.accent+'" transform="rotate(-15 36 28)"/>';
+    svg+='<ellipse cx="64" cy="28" rx="9" ry="22" fill="'+s.accent+'" transform="rotate(15 64 28)"/>';
+    svg+='<ellipse cx="36" cy="30" rx="5" ry="16" fill="'+shade(s.body,-15)+'" transform="rotate(-15 36 30)" opacity=".5"/>';
+    svg+='<ellipse cx="64" cy="30" rx="5" ry="16" fill="'+shade(s.body,-15)+'" transform="rotate(15 64 30)" opacity=".5"/>';
+  }else if(s.ear==="tri"){
+    svg+='<path d="M33 32 L28 10 L50 24 Z" fill="'+s.accent+'"/>';
+    svg+='<path d="M67 32 L72 10 L50 24 Z" fill="'+s.accent+'"/>';
+    svg+='<path d="M35 28 L32 14 L46 22 Z" fill="'+shade(s.body,15)+'" opacity=".5"/>';
+    svg+='<path d="M65 28 L68 14 L54 22 Z" fill="'+shade(s.body,15)+'" opacity=".5"/>';
+  }else if(s.ear==="flop"){
+    svg+='<ellipse cx="32" cy="38" rx="12" ry="18" fill="'+s.accent+'" transform="rotate(-20 32 38)"/>';
+    svg+='<ellipse cx="68" cy="38" rx="12" ry="18" fill="'+s.accent+'" transform="rotate(20 68 38)"/>';
+  }else if(s.ear==="tuft"){
+    svg+='<path d="M44 22 Q50 14 56 22" stroke="'+s.accent+'" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  }
+  /* 身体 */
+  if(lv===1){
+    /* 蛋 */
+    svg+='<ellipse cx="50" cy="56" rx="24" ry="30" fill="'+s.body+'" stroke="'+shade(s.body,-20)+'" stroke-width="2"/>';
+    svg+='<circle cx="42" cy="48" r="2.5" fill="'+s.accent+'" opacity=".4"/>';
+    svg+='<circle cx="58" cy="62" r="2" fill="'+s.accent+'" opacity=".4"/>';
+    svg+='<circle cx="48" cy="70" r="1.5" fill="'+s.accent+'" opacity=".3"/>';
+    svg+='<path d="M47 32 Q50 35 53 32" stroke="'+shade(s.body,-25)+'" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+  }else{
+    svg+='<circle cx="50" cy="56" r="30" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>';
+    /* 腹部 */
+    svg+='<ellipse cx="50" cy="60" rx="18" ry="16" fill="'+shade(s.body,20)+'" opacity=".6"/>';
+  }
+  /* 眼睛 */
+  if(s.face==="panda"){
+    svg+='<ellipse cx="40" cy="52" rx="9" ry="8" fill="#37474F" opacity=".3"/>';
+    svg+='<ellipse cx="60" cy="52" rx="9" ry="8" fill="#37474F" opacity=".3"/>';
+  }
+  svg+='<circle cx="40" cy="52" r="6" fill="#3E2723"/>';
+  svg+='<circle cx="42" cy="50" r="2.5" fill="#fff"/>';
+  svg+='<circle cx="38" cy="54" r="1.2" fill="#fff" opacity=".6"/>';
+  svg+='<circle cx="60" cy="52" r="6" fill="#3E2723"/>';
+  svg+='<circle cx="62" cy="50" r="2.5" fill="#fff"/>';
+  svg+='<circle cx="58" cy="54" r="1.2" fill="#fff" opacity=".6"/>';
+  /* 腮红 */
+  svg+='<circle cx="32" cy="62" r="4.5" fill="#FFAB91" opacity=".55"/>';
+  svg+='<circle cx="68" cy="62" r="4.5" fill="#FFAB91" opacity=".55"/>';
+  /* 面部特征 */
+  if(s.face==="beak"){
+    svg+='<path d="M45 62 L50 70 L55 62 Z" fill="#FF8F00" stroke="#E65100" stroke-width="1"/>';
+  }else if(s.face==="bill"){
+    svg+='<ellipse cx="50" cy="65" rx="8" ry="5" fill="#FF9800"/>';
+    svg+='<line x1="42" y1="65" x2="58" y2="65" stroke="#E65100" stroke-width="1"/>';
+  }else if(s.face==="bunny"){
+    svg+='<ellipse cx="50" cy="64" rx="3" ry="2.5" fill="#F48FB1"/>';
+    svg+='<path d="M47 64 Q50 67 53 64" stroke="#EC407A" stroke-width="1" fill="none"/>';
+  }else if(s.face==="whisk"){
+    svg+='<line x1="26" y1="60" x2="38" y2="58" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
+    svg+='<line x1="26" y1="65" x2="38" y2="62" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
+    svg+='<line x1="74" y1="60" x2="62" y2="58" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
+    svg+='<line x1="74" y1="65" x2="62" y2="62" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
+    svg+='<ellipse cx="50" cy="63" rx="3" ry="2.5" fill="#6D4C41"/>';
+  }else if(s.face==="nose"){
+    svg+='<ellipse cx="50" cy="62" rx="5" ry="4" fill="#4E342E"/>';
+    svg+='<circle cx="48" cy="61" r="1.5" fill="#fff" opacity=".4"/>';
+  }else if(s.face==="panda"){
+    svg+='<ellipse cx="50" cy="62" rx="4" ry="3" fill="#37474F"/>';
+  }else if(s.face==="horn"){
+    /* 麒麟角 */
+    svg+='<path d="M48 26 L44 6 L60 20 Z" fill="#FFF3E0" stroke="#E0A800" stroke-width="1.5"/>';
+    svg+='<path d="M44 6 L52 12 L48 26 Z" fill="#FFE082" opacity=".5"/>';
+    /* 鬃毛火焰 */
+    svg+='<path d="M25 18 Q35 8 42 20" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    svg+='<path d="M75 18 Q65 8 58 20" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    svg+='<path d="M20 38 Q28 30 36 36" stroke="#FF8A65" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
+    svg+='<path d="M80 38 Q72 30 64 36" stroke="#FF8A65" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
+  }
+  /* 稀有光环 */
+  if(s.rare){
+    svg+='<circle cx="78" cy="28" r="3" fill="#FFF176" opacity=".8"/>';
+    svg+='<circle cx="76" cy="26" r="1.5" fill="#fff" opacity=".9"/>';
+    svg+='<circle cx="22" cy="42" r="2.5" fill="#FFF176" opacity=".6"/>';
+    svg+='<circle cx="84" cy="52" r="2" fill="#FFF176" opacity=".5"/>';
+  }
+  /* 等级配件: Lv5+ 蝴蝶结, Lv6+ 围巾, Lv7 竹叶, Lv8 皇冠 */
+  if(lv>=5&&lv<8){
+    svg+='<path d="M38 38 Q42 34 46 38 Q42 42 38 38 Z" fill="#FF5277" opacity=".8"/>';
+    svg+='<path d="M62 38 Q58 34 54 38 Q58 42 62 38 Z" fill="#FF5277" opacity=".8"/>';
+    svg+='<circle cx="50" cy="38" r="3" fill="#FF5277"/>';
+  }
+  if(lv>=6&&lv<8){
+    svg+='<path d="M35 76 Q50 80 65 76" stroke="#4CAF50" stroke-width="4" fill="none" stroke-linecap="round"/>';
+  }
+  if(lv===7){
+    svg+='<path d="M70 72 Q76 66 80 68 Z" fill="#4CAF50" opacity=".8"/>';
+  }
+  if(lv===8){
+    svg+='<path d="M40 16 L44 8 L48 14 L52 8 L56 14 L60 8 L60 16 Z" fill="#FFD700" stroke="#FF8F00" stroke-width="1.5"/>';
+    svg+='<circle cx="50" cy="12" r="2" fill="#E91E63"/>';
+  }
+  svg+='</svg>';
+  return svg;
+}
+/* 颜色明暗调整 */
+function shade(hex,amt){
+  var c=hex.replace('#','');
+  if(c.length===3)c=c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+  var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
+  r=Math.max(0,Math.min(255,r+amt));
+  g=Math.max(0,Math.min(255,g+amt));
+  b=Math.max(0,Math.min(255,b+amt));
+  return'#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+}
+
+/* ============================================================
+   章节配置
+   ============================================================ */
+var CHAPTERS=[
+ {n:1,name:"开业大吉",icon:"🏪",story:"在小镇的角落，一家温馨的萌宠店开业了。第一位顾客推门而入，想要一只可爱的小鸡...\n\n「老板，听说你家能合成萌宠，是真的吗？」"},
+ {n:2,name:"奇怪客人",icon:"🌟",story:"店铺名声渐起，来了些奇怪的客人。他们想要的萌宠更稀有，出价也更高...\n\n「我要那种毛茸茸的！普通的我可看不上！」"},
+ {n:3,name:"森林秘境",icon:"🌲",story:"你决定搬进森林深处，听说这里的灵气能孕育出更神奇的萌宠。\n\n森林里到处是野生的萌宠蛋，等待你去发掘..."},
+ {n:4,name:"都市分店",icon:"🏙️",story:"城市里也传开了你的名声！繁华街区开了分店，都市客人们的口味可大不相同。\n\n「我要最潮最可爱的！价格不是问题！」"},
+ {n:5,name:"云端牧场",icon:"☁️",story:"云端之上，你建了一座漂浮牧场。这里的云朵能滋养出前所未有的萌宠...\n\n传说云端的灵气越浓，萌宠就越稀有。"},
+ {n:6,name:"传说之巅",icon:"👑",story:"传说中的麒麟终于现身了！这是萌宠合成师的终极考验。\n\n「能合成出我的，才有资格被称为大师...」"},
+];
+
+/* 顾客配置 */
+var CUSTOMERS=["👧","👦","🧑","👩","👨","👵","👴","🧓","👲","👳","👸","🤴","🦸","🧙","🧚","🧝","🧞","🧜","🧛","🧟","👻","🤖","👽","🐱","🐶","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐸","🐧","🦄","🐙","🦋","🐝","🐞","🦉","🦜","🦢","🦩","🕊️","🦔"," hedgehog"];
+var ORDER_TEXTS=["我想要可爱的萌宠！","给我来几只萌宠吧～","听说你家的萌宠最棒了！","想要毛茸茸的小可爱！","拜托了，我等很久了！","这次要更稀有的哦～","只有你能帮我了！","拜托拜托～"];
+
+/* ============================================================
+   游戏状态
+   ============================================================ */
+var MAX_SLOTS=12;
+var state={
+  levelIdx:0,
+  board:[],
+  goals:[],
+  steps:0,
+  maxSteps:0,
+  coins:0,
+  bought:0,
+  halfPrice:false,
+  selected:null,
+  nextId:1,
+  adUsed:{freeEgg:false,plusSteps:false},
+  level:null,
+  fromWin:false,
+};
+var save=loadSave()||{progress:0,stars:newArray(66,0),seen:newArray(6,false)};
+
+function newArray(n,v){var a=[];for(var i=0;i<n;i++)a.push(v);return a}
+
+/* ============================================================
+   存档
+   ============================================================ */
+function loadSave(){
+  try{var r=localStorage.getItem("petShopSave");if(!r)return null;var d=JSON.parse(r);if(!d.stars||d.stars.length<66)d.stars=newArray(66,0);if(!d.seen||d.seen.length<6)d.seen=newArray(6,false);return d}catch(e){return null}
+}
+function saveSave(){
+  try{localStorage.setItem("petShopSave",JSON.stringify(save))}catch(e){}
+}
+
+/* ============================================================
+   工具函数
+   ============================================================ */
+function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e4?(n/1e3).toFixed(1)+"k":Math.floor(n).toString()}
+function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("show")},1600)}
+function randItem(a){return a[Math.floor(Math.random()*a.length)]}
+function processGoals(g){
+  var map={};
+  g.forEach(function(x){map[x.l]=(map[x.l]||0)+x.c});
+  return Object.keys(map).map(function(l){return{lv:parseInt(l),count:map[l]}}).sort(function(a,b){return b.lv-a.lv});
+}
+
+/* ============================================================
+   屏幕切换
+   ============================================================ */
+function showMenu(){
+  document.getElementById("screen-menu").classList.remove("hidden");
+  document.getElementById("screen-game").classList.add("hidden");
+  renderMenu();
+}
+function showGame(){
+  document.getElementById("screen-menu").classList.add("hidden");
+  document.getElementById("screen-game").classList.remove("hidden");
+}
+
+/* ============================================================
+   菜单渲染
+   ============================================================ */
+function renderMenu(){
+  /* 吉祥物 */
+  var mascot=document.getElementById("menuMascot");
+  mascot.innerHTML=petSVG(4)+petSVG(8);
+
+  var html="";
+  CHAPTERS.forEach(function(ch){
+    var chLevels=LEVELS.filter(function(l){return l.ch===ch.n});
+    var chStart=(ch.n-1)*11;
+    var chStars=0;
+    for(var i=0;i<11;i++)chStars+=save.stars[chStart+i]||0;
+    var maxStars=33;
+    var unlocked=ch.n===1||(save.stars[(ch.n-2)*11+10]>0);
+
+    html+='<div class="chapter-card'+(unlocked?"":" locked")+'">';
+    html+='<div class="ch-head"><span class="ch-icon">'+ch.icon+'</span>';
+    html+='<span class="ch-name">第'+ch.n+'章 '+ch.name+'</span>';
+    html+='<span class="ch-stars">⭐'+chStars+'/'+maxStars+'</span></div>';
+    html+='<div class="level-grid">';
+    chLevels.forEach(function(lv,i){
+      var idx=chStart+i;
+      var ls=save.stars[idx]||0;
+      var lu=idx<=save.progress;
+      var isBoss=lv.t==="B";
+      html+='<div class="lv-btn'+(lu?" unlocked":" locked")+(isBoss?" boss":"")+'" data-level="'+idx+'">';
+      if(lu){
+        html+='<div class="lb-id">'+lv.id+'</div>';
+        html+='<div class="lb-stars">';
+        for(var s=0;s<3;s++)html+='<span class="'+(s<ls?"s":"e")+'">★</span>';
+        html+='</div>';
+      }else{
+        html+='<div class="lb-lock">🔒</div>';
+      }
+      html+='</div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById("chapterList").innerHTML=html;
+
+  /* 绑定点击 */
+  document.querySelectorAll(".lv-btn.unlocked").forEach(function(b){
+    b.addEventListener("click",function(){
+      var idx=parseInt(b.dataset.level,10);
+      startLevel(idx);
+    });
+  });
+}
+
+/* ============================================================
+   关卡初始化
+   ============================================================ */
+function startLevel(idx){
+  state.levelIdx=idx;
+  var lv=LEVELS[idx];
+  state.level=lv;
+  state.goals=processGoals(lv.g);
+  state.maxSteps=lv.s;
+  state.steps=lv.s;
+  state.coins=lv.co;
+  state.bought=0;
+  state.halfPrice=false;
+  state.selected=null;
+  state.adUsed={freeEgg:false,plusSteps:false};
+
+  /* 初始化棋盘 */
+  state.board=[];
+  state.nextId=1;
+  var pets=[];
+  Object.keys(lv.b).forEach(function(lvStr){
+    var lvNum=parseInt(lvStr);
+    var cnt=lv.b[lvStr];
+    for(var i=0;i<cnt;i++)pets.push({id:state.nextId++,lv:lvNum});
+  });
+  /* 随机打乱 */
+  for(var i=pets.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=pets[i];pets[i]=pets[j];pets[j]=t;
+  }
+  while(pets.length<MAX_SLOTS)pets.push(null);
+  state.board=pets;
+
+  /* 检查是否需要显示章节剧情 */
+  var ch=lv.ch;
+  if(!save.seen[ch-1]){
+    showStory(ch);
+  }else{
+    showGame();
+    renderGame();
+  }
+}
+
+/* ============================================================
+   剧情弹窗
+   ============================================================ */
+function showStory(ch){
+  var c=CHAPTERS[ch-1];
+  document.getElementById("storyIcon").textContent=c.icon;
+  document.getElementById("storyCh").textContent="第"+ch+"章 · "+c.name;
+  document.getElementById("storyText").textContent=c.story;
+  document.getElementById("ovStory").classList.add("show");
+  save.seen[ch-1]=true;
+  saveSave();
+}
+document.getElementById("storyStart").addEventListener("click",function(){
+  document.getElementById("ovStory").classList.remove("show");
+  showGame();
+  renderGame();
+});
+
+/* ============================================================
+   游戏渲染
+   ============================================================ */
+function renderGame(){
+  var lv=state.level;
+  document.getElementById("ghLevel").textContent=lv.id;
+  document.getElementById("ghChapter").textContent=lv.cn;
+  document.getElementById("ghStepsVal").textContent=state.steps;
+  document.getElementById("ghCoinsVal").textContent=fmt(state.coins);
+
+  var stepsBadge=document.getElementById("ghSteps");
+  if(state.steps<=2)stepsBadge.classList.add("low");
+  else stepsBadge.classList.remove("low");
+
+  /* 订单面板 */
+  var customerIdx=(state.levelIdx*7)%CUSTOMERS.length;
+  document.getElementById("orderAvatar").textContent=CUSTOMERS[customerIdx];
+  document.getElementById("orderWho").textContent="顾客";
+  document.getElementById("orderWant").textContent=randItem(ORDER_TEXTS);
+
+  /* 订单目标 */
+  var goalsHtml="";
+  var goalStatus=getGoalStatus();
+  state.goals.forEach(function(g,i){
+    var st=goalStatus[i];
+    var cls=st.fulfilled?"done":"";
+    goalsHtml+='<div class="goal-item '+cls+'">';
+    goalsHtml+='<div class="gi-pet">'+petSVG(g.lv)+'</div>';
+    goalsHtml+='<span class="gi-count">'+st.have+'/'+g.count+'</span>';
+    if(st.fulfilled)goalsHtml+='<span class="gi-check">✓</span>';
+    goalsHtml+='</div>';
+  });
+  document.getElementById("orderGoals").innerHTML=goalsHtml;
+
+  /* 棋盘 */
+  var boardHtml="";
+  for(var i=0;i<MAX_SLOTS;i++){
+    var p=state.board[i];
+    if(p){
+      var sel=state.selected===p.id?" sel":"";
+      var glow="";
+      /* 检查是否是目标宠物 */
+      if(state.goals.some(function(g,idx){var st=getGoalStatus();return g.lv===p.lv&&!st[idx].fulfilled}))glow=" goal-glow";
+      boardHtml+='<div class="slot pet'+sel+glow+'" data-id="'+p.id+'">'+petSVG(p.lv)+'<span class="lv-badge">Lv'+p.lv+'</span></div>';
+    }else{
+      boardHtml+='<div class="slot empty"></div>';
+    }
+  }
+  document.getElementById("board").innerHTML=boardHtml;
+
+  /* 操作栏 */
+  var price=buyPrice(state.bought+1);
+  if(state.halfPrice)price=Math.round(price/2);
+  document.getElementById("btnBuySub").textContent=price+"💰";
+  document.getElementById("btnBuy").disabled=state.coins<price||!hasEmptySlot();
+
+  var canComplete=canCompleteOrder();
+  var deliverBtn=document.getElementById("btnDeliver");
+  if(canComplete){
+    deliverBtn.classList.remove("disabled");
+    deliverBtn.classList.add("ready");
+    deliverBtn.querySelector(".sub").textContent="点击交付！";
+  }else{
+    deliverBtn.classList.add("disabled");
+    deliverBtn.classList.remove("ready");
+    deliverBtn.querySelector(".sub").textContent="需凑齐萌宠";
+  }
+
+  /* 广告按钮 */
+  var ad=lv.ad||{};
+  var adEggBtn=document.getElementById("btnAdEgg");
+  if(ad.fe&&!state.adUsed.freeEgg){
+    adEggBtn.classList.remove("hidden");
+    adEggBtn.disabled=!hasEmptySlot();
+  }else{
+    adEggBtn.classList.add("hidden");
+  }
+  var adStepsBtn=document.getElementById("btnAdSteps");
+  if(ad.ps&&!state.adUsed.plusSteps&&state.steps<=2){
+    adStepsBtn.classList.remove("hidden");
+  }else{
+    adStepsBtn.classList.add("hidden");
+  }
+}
+
+/* ============================================================
+   订单状态
+   ============================================================ */
+function getGoalStatus(){
+  return state.goals.map(function(g){
+    var count=0;
+    state.board.forEach(function(p){if(p&&p.lv===g.lv)count++});
+    return{fulfilled:count>=g.count,have:Math.min(count,g.count),need:g.count};
+  });
+}
+function canCompleteOrder(){
+  return getGoalStatus().every(function(s){return s.fulfilled});
+}
+
+/* ============================================================
+   棋盘操作
+   ============================================================ */
+function hasEmptySlot(){
+  return state.board.some(function(p){return p===null});
+}
+function findEmptySlot(){
+  for(var i=0;i<MAX_SLOTS;i++)if(state.board[i]===null)return i;
+  return-1;
+}
+
+function onBoardClick(e){
+  var slot=e.target.closest(".slot.pet");
+  if(!slot){
+    state.selected=null;renderGame();return;
+  }
+  var id=parseInt(slot.dataset.id,10);
+  var pet=state.board.find(function(p){return p&&p.id===id});
+  if(!pet)return;
+  if(state.selected===null){
+    state.selected=id;renderGame();return;
+  }
+  if(state.selected===id){
+    state.selected=null;renderGame();return;
+  }
+  var a=state.board.find(function(p){return p&&p.id===state.selected});
+  if(!a){state.selected=id;renderGame();return}
+  if(a.lv===pet.lv&&pet.lv<8){
+    mergePets(a,pet);
+  }else{
+    state.selected=id;
+    toast("要选两个同等级的萌宠哦");
+  }
+  renderGame();
+}
+
+function mergePets(a,b){
+  var newLv=a.lv+1;
+  var idxA=state.board.indexOf(a);
+  var idxB=state.board.indexOf(b);
+  state.board[idxA]=null;
+  state.board[idxB]={id:state.nextId++,lv:newLv};
+  state.selected=null;
+  state.steps--;
+  /* 合成动画 */
+  var slot=document.querySelector('.slot.pet[data-id="'+state.board[idxB].id+'"]');
+  if(slot){
+    slot.classList.add("merge-in");
+    var rect=slot.getBoundingClientRect();
+    spawnParticles(rect.left+rect.width/2,rect.top+rect.height/2);
+  }
+  if(navigator.vibrate)navigator.vibrate(15);
+  toast("合成了 "+SPECIES[newLv-1].name+(newLv===8?" ★ 传说！":""));
+  checkLose();
+}
+
+function buyEgg(){
+  var price=buyPrice(state.bought+1);
+  if(state.halfPrice)price=Math.round(price/2);
+  if(state.coins<price){toast("金币不够");return}
+  if(!hasEmptySlot()){toast("棋盘满了，先合成吧");return}
+  var idx=findEmptySlot();
+  state.board[idx]={id:state.nextId++,lv:1};
+  state.coins-=price;
+  state.bought++;
+  state.steps--;
+  /* 动画 */
+  var slot=document.querySelectorAll(".slot.pet")[idx];
+  if(slot)slot.classList.add("merge-in");
+  toast("买到一个宠物蛋");
+  renderGame();
+  checkLose();
+}
+
+/* ============================================================
+   完成订单
+   ============================================================ */
+function completeOrder(){
+  if(!canCompleteOrder()){toast("还缺少萌宠哦");return}
+  /* 移除目标宠物 */
+  state.goals.forEach(function(g){
+    var removed=0;
+    for(var i=0;i<MAX_SLOTS&&removed<g.count;i++){
+      if(state.board[i]&&state.board[i].lv===g.lv){
+        state.board[i]=null;
+        removed++;
+      }
+    }
+  });
+  /* 计算星级 */
+  var ratio=state.steps/state.maxSteps;
+  var stars=1;
+  if(ratio>=state.level.s3)stars=3;
+  else if(ratio>=state.level.s2)stars=2;
+  showWin(stars);
+}
+
+/* ============================================================
+   胜利/失败
+   ============================================================ */
+function showWin(stars){
+  /* 更新存档 */
+  if(stars>(save.stars[state.levelIdx]||0)){
+    save.stars[state.levelIdx]=stars;
+  }
+  if(state.levelIdx>=save.progress&&state.levelIdx<65){
+    save.progress=state.levelIdx+1;
+  }
+  saveSave();
+
+  /* 计算奖励 */
+  var baseReward=10*state.level.ch;
+  var starBonus=5*stars;
+  var reward=baseReward+starBonus;
+  if(state.level.t==="F")reward*=2;/* 缓冲关双倍 */
+
+  document.getElementById("resultTitle").textContent="订单完成！";
+  document.getElementById("resultTitle").className="result-title win";
+  document.getElementById("resultSub").textContent=SPECIES[state.goals[0].lv-1].name+" 已送达～";
+  /* 星星动画 */
+  var starHtml="";
+  for(var i=0;i<3;i++)starHtml+='<div class="star-slot" data-i="'+i+'">★</div>';
+  document.getElementById("starRow").innerHTML=starHtml;
+  /* 逐颗点亮 */
+  setTimeout(function(){
+    document.querySelectorAll(".star-slot").forEach(function(s,i){
+      if(i<stars)setTimeout(function(){s.classList.add("on")},i*300);
+    });
+  },200);
+
+  document.getElementById("resultReward").innerHTML='获得金币 <span class="coins">+'+reward+'</span>';
+
+  /* 按钮 */
+  var btnsHtml="";
+  var ad=state.level.ad||{};
+  if(ad.dr){
+    btnsHtml+='<button class="ov-btn ad" id="btnDoubleReward">📺 双倍奖励</button>';
+  }
+  if(state.levelIdx<65){
+    btnsHtml+='<button class="ov-btn primary" id="btnNext">下一关 →</button>';
+  }
+  btnsHtml+='<button class="ov-btn secondary" id="btnReplay">重玩</button>';
+  btnsHtml+='<button class="ov-btn secondary" id="btnMenu">菜单</button>';
+  document.getElementById("resultBtns").innerHTML=btnsHtml;
+
+  /* 绑定按钮 */
+  if(ad.dr){
+    document.getElementById("btnDoubleReward").addEventListener("click",function(){
+      showAd(function(){
+        reward*=2;
+        document.getElementById("resultReward").innerHTML='获得金币 <span class="coins">+'+reward+'</span>';
+        floatCoins(reward);
+        document.getElementById("btnDoubleReward").disabled=true;
+        document.getElementById("btnDoubleReward").textContent="已领取";
+      });
+    });
+  }
+  if(state.levelIdx<65){
+    document.getElementById("btnNext").addEventListener("click",function(){
+      document.getElementById("ovResult").classList.remove("show");
+      startLevel(state.levelIdx+1);
+    });
+  }
+  document.getElementById("btnReplay").addEventListener("click",function(){
+    document.getElementById("ovResult").classList.remove("show");
+    startLevel(state.levelIdx);
+  });
+  document.getElementById("btnMenu").addEventListener("click",function(){
+    document.getElementById("ovResult").classList.remove("show");
+    showMenu();
+  });
+
+  setTimeout(function(){document.getElementById("ovResult").classList.add("show")},600);
+  floatCoins(reward);
+}
+
+function checkLose(){
+  if(state.steps<=0&&!canCompleteOrder()){
+    /* 失败 */
+    setTimeout(function(){
+      document.getElementById("resultTitle").textContent="步数用完了";
+      document.getElementById("resultTitle").className="result-title lose";
+      document.getElementById("resultSub").textContent="别灰心，再试一次！";
+      document.getElementById("starRow").innerHTML="";
+      document.getElementById("resultReward").innerHTML="";
+
+      var btnsHtml="";
+      var ad=state.level.ad||{};
+      if(ad.ps&&!state.adUsed.plusSteps){
+        btnsHtml+='<button class="ov-btn ad" id="btnAdStepsLose">📺 +5步继续</button>';
+      }
+      btnsHtml+='<button class="ov-btn primary" id="btnRetry">重试</button>';
+      btnsHtml+='<button class="ov-btn secondary" id="btnMenuLose">菜单</button>';
+      document.getElementById("resultBtns").innerHTML=btnsHtml;
+
+      if(ad.ps&&!state.adUsed.plusSteps){
+        document.getElementById("btnAdStepsLose").addEventListener("click",function(){
+          showAd(function(){
+            state.adUsed.plusSteps=true;
+            state.steps+=ad.ps;
+            document.getElementById("ovResult").classList.remove("show");
+            renderGame();
+            toast("+"+ad.ps+" 步！继续加油！");
+          });
+        });
+      }
+      document.getElementById("btnRetry").addEventListener("click",function(){
+        document.getElementById("ovResult").classList.remove("show");
+        startLevel(state.levelIdx);
+      });
+      document.getElementById("btnMenuLose").addEventListener("click",function(){
+        document.getElementById("ovResult").classList.remove("show");
+        showMenu();
+      });
+
+      document.getElementById("ovResult").classList.add("show");
+    },400);
+  }
+}
+
+/* ============================================================
+   广告模拟
+   ============================================================ */
+var adTimer=null;
+function showAd(cb){
+  var ov=document.getElementById("ovAd");
+  var cnt=document.getElementById("adCount");
+  var sk=document.getElementById("adSkip");
+  ov.classList.add("show");
+  var left=3;
+  cnt.textContent=left;
+  sk.disabled=true;
+  clearInterval(adTimer);
+  adTimer=setInterval(function(){
+    left--;
+    if(left<=0){
+      clearInterval(adTimer);
+      sk.disabled=false;
+      cnt.textContent="✓";
+    }else{
+      cnt.textContent=left;
+    }
+  },1000);
+  sk.onclick=function(){ov.classList.remove("show");cb()};
+}
+
+/* 广告: 免费蛋 */
+document.getElementById("btnAdEgg").addEventListener("click",function(){
+  showAd(function(){
+    if(!hasEmptySlot()){toast("棋盘满了");return}
+    var idx=findEmptySlot();
+    state.board[idx]={id:state.nextId++,lv:1};
+    state.adUsed.freeEgg=true;
+    var slot=document.querySelectorAll(".slot.pet")[idx];
+    if(slot){
+      slot.classList.add("merge-in");
+      var rect=slot.getBoundingClientRect();
+      spawnParticles(rect.left+rect.width/2,rect.top+rect.height/2);
+    }
+    toast("免费蛋到手！");
+    renderGame();
+  });
+});
+
+/* 广告: +步数(主动使用) */
+document.getElementById("btnAdSteps").addEventListener("click",function(){
+  showAd(function(){
+    state.adUsed.plusSteps=true;
+    state.steps+=state.level.ad.ps;
+    toast="+"+state.level.ad.ps+" 步！";
+    renderGame();
+  });
+});
+
+/* ============================================================
+   粒子效果
+   ============================================================ */
+function spawnParticles(x,y){
+  var colors=["#FFD54F","#FF8A65","#FFAB91","#A5D6A7","#CE93D8"];
+  for(var i=0;i<6;i++){
+    var p=document.createElement("div");
+    p.className="particle";
+    p.style.left=x+"px";
+    p.style.top=y+"px";
+    p.style.background=colors[i%colors.length];
+    var angle=(i/6)*Math.PI*2;
+    var dist=30+Math.random()*25;
+    p.style.setProperty("--dx",Math.cos(angle)*dist+"px");
+    p.style.setProperty("--dy",Math.sin(angle)*dist+"px");
+    document.body.appendChild(p);
+    setTimeout(function(){p.remove()},650);
+  }
+}
+
+function floatCoins(gain){
+  var el=document.createElement("div");
+  el.className="float-coin";
+  el.textContent="+"+fmt(gain);
+  el.style.left=(Math.random()*40+30)+"%";
+  el.style.top="40%";
+  document.body.appendChild(el);
+  setTimeout(function(){el.remove()},950);
+}
+
+/* ============================================================
+   事件绑定
+   ============================================================ */
+document.getElementById("btnBack").addEventListener("click",function(){
+  showMenu();
+});
+document.getElementById("board").addEventListener("click",onBoardClick);
+document.getElementById("btnBuy").addEventListener("click",buyEgg);
+document.getElementById("btnDeliver").addEventListener("click",completeOrder);
+
+/* ============================================================
+   启动
+   ============================================================ */
+showMenu();
+</script>
+</body>
+</html>
