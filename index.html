@@ -42,6 +42,17 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sa
 .menu-title .sub{font-size:12px;color:#8D6E63;margin-top:4px}
 .menu-mascot{text-align:center;margin:10px 0}
 .menu-mascot svg{width:80px;height:80px}
+
+/* 钱包+签到栏 */
+.wallet-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 0 4px}
+.wallet-badge{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.85);border-radius:16px;padding:5px 14px;border:2px solid #FFCC80}
+.wallet-badge .ico{font-size:14px}
+.wallet-badge .val{font-size:15px;font-weight:700;color:#E65100}
+.checkin-btn{background:linear-gradient(135deg,#FF8A65,#FF7043);color:#fff;border:none;border-radius:16px;padding:6px 16px;font-size:13px;font-weight:600;font-family:inherit;display:flex;align-items:center;gap:4px;cursor:pointer;position:relative;transition:transform .1s}
+.checkin-btn:active{transform:scale(.93)}
+.checkin-btn .dot{position:absolute;top:-3px;right:-3px;width:11px;height:11px;background:#F44336;border-radius:50%;border:2px solid #FFF9F2;animation:dotPulse 1.2s infinite}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
 .chapter-card{background:rgba(255,255,255,.85);border-radius:20px;margin-bottom:14px;padding:14px;box-shadow:0 4px 12px rgba(255,138,101,.1);border:2px solid #FFE0B2}
 .chapter-card.locked{opacity:.5;filter:grayscale(.5)}
 .ch-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
@@ -98,6 +109,15 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sa
 .slot.pet{background:linear-gradient(145deg,#FFFFFF,#FFF8F0);border:2px solid #FFE0B2;box-shadow:0 2px 8px rgba(255,138,101,.1)}
 .slot.pet svg{width:80%;height:80%;pointer-events:none}
 .slot .lv-badge{position:absolute;bottom:3px;right:5px;font-size:9px;font-weight:700;color:#fff;background:rgba(216,96,0,.8);border-radius:8px;padding:1px 5px}
+/* 稀有度边框 */
+.slot.pet.rarity-R{border-color:#64B5F6;box-shadow:0 0 0 2px rgba(100,181,246,.2),0 2px 8px rgba(100,181,246,.15)}
+.slot.pet.rarity-SR{border-color:#CE93D8;box-shadow:0 0 0 2px rgba(206,147,216,.25),0 2px 10px rgba(206,147,216,.2)}
+.slot.pet.rarity-SSR{border-color:#FFD700;box-shadow:0 0 0 3px rgba(255,215,0,.25),0 2px 12px rgba(255,215,0,.25);animation:ssrShine 2s ease-in-out infinite}
+@keyframes ssrShine{0%,100%{box-shadow:0 0 0 3px rgba(255,215,0,.25),0 2px 12px rgba(255,215,0,.25)}50%{box-shadow:0 0 0 3px rgba(255,215,0,.4),0 2px 16px rgba(255,215,0,.35)}}
+.slot .rarity-tag{position:absolute;top:3px;left:5px;font-size:8px;font-weight:700;color:#fff;border-radius:6px;padding:1px 4px}
+.slot .rarity-tag.R{background:rgba(33,150,243,.85)}
+.slot .rarity-tag.SR{background:rgba(156,39,176,.85)}
+.slot .rarity-tag.SSR{background:linear-gradient(90deg,#FF6F00,#FFD700)}
 .slot.sel{border-color:#FF8A65;box-shadow:0 0 0 3px rgba(255,138,101,.25),0 4px 12px rgba(255,138,101,.2);transform:scale(1.04)}
 .slot.goal-glow{border-color:#66BB6A;box-shadow:0 0 0 3px rgba(102,187,106,.3),0 2px 12px rgba(102,187,106,.15)}
 .slot.merge-in{animation:popIn .4s ease}
@@ -134,6 +154,7 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sa
 @keyframes starPop{0%{transform:scale(0) rotate(-180deg)}60%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
 .result-reward{font-size:14px;color:#5D4037;margin:8px 0 16px}
 .result-reward .coins{font-size:22px;font-weight:700;color:#FF8F00}
+.result-reward .first-clear{display:block;font-size:12px;color:#E91E63;margin-top:4px}
 .ov-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .ov-btn{border:none;border-radius:14px;padding:12px 20px;font-size:14px;font-weight:600;font-family:inherit;transition:transform .1s}
 .ov-btn:active{transform:scale(.93)}
@@ -152,6 +173,20 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sa
 .ad-card .ad-tip{font-size:11px;color:#BCAAA4;margin-bottom:14px}
 .ad-card .ad-skip{font-size:14px;font-weight:600;color:#fff;background:linear-gradient(135deg,#FF8A65,#FF7043);border:none;border-radius:14px;padding:10px 24px;cursor:pointer;font-family:inherit}
 .ad-card .ad-skip:disabled{background:#B0AAA0}
+
+/* 签到弹窗 */
+.checkin-card{width:min(360px,90%)}
+.checkin-title{font-size:20px;font-weight:800;color:#E65100;margin-bottom:4px}
+.checkin-sub{font-size:12px;color:#8D6E63;margin-bottom:16px}
+.checkin-calendar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.checkin-day{aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FFF3E0;border:2px solid #FFCC80;position:relative;gap:2px}
+.checkin-day.claimed{background:#E8F5E9;border-color:#A5D6A7}
+.checkin-day.today{border-color:#FF8A65;box-shadow:0 0 0 3px rgba(255,138,101,.2)}
+.checkin-day .cd-label{font-size:11px;color:#8D6E63;font-weight:600}
+.checkin-day .cd-reward{font-size:13px;font-weight:700;color:#E65100}
+.checkin-day.claimed .cd-reward{color:#2E7D32}
+.checkin-day .cd-check{position:absolute;top:2px;right:4px;font-size:14px;color:#66BB6A}
+.checkin-day .cd-emoji{font-size:18px}
 
 /* 粒子 */
 .particle{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:150;animation:particleFly .6s ease-out forwards}
@@ -172,13 +207,17 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sa
 <div id="screen-menu" class="screen">
   <div class="menu-mascot" id="menuMascot"></div>
   <div class="menu-title"><div class="logo">萌宠合成店</div><div class="sub">合成萌宠 · 完成订单 · 收集图鉴</div></div>
-  <div id="chapterList" style="margin-top:16px"></div>
+  <div class="wallet-bar">
+    <div class="wallet-badge"><span class="ico">💰</span><span class="val" id="walletVal">0</span></div>
+    <button class="checkin-btn" id="btnCheckin">📅 每日签到</button>
+  </div>
+  <div id="chapterList" style="margin-top:12px"></div>
 </div>
 
 <!-- 游戏画面 -->
 <div id="screen-game" class="screen hidden">
   <div class="game-header">
-    <button class="gh-back" id="btnBack">←</button>
+    <button class="gh-back" id="btnBack">&larr;</button>
     <div class="gh-info">
       <div class="lvl" id="ghLevel">1-1</div>
       <div class="ch" id="ghChapter">开业大吉</div>
@@ -235,6 +274,19 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sa
     <div class="ad-count" id="adCount">3</div>
     <div class="ad-tip">（原型模拟广告，上线后接入真实激励视频 SDK）</div>
     <button class="ad-skip" id="adSkip" disabled>跳过广告</button>
+  </div>
+</div>
+
+<!-- 签到弹窗 -->
+<div class="overlay" id="ovCheckin">
+  <div class="ov-card checkin-card">
+    <div class="checkin-title">每日签到</div>
+    <div class="checkin-sub">连续签到奖励递增，Day7 有大奖！</div>
+    <div class="checkin-calendar" id="checkinCalendar"></div>
+    <div class="ov-btns">
+      <button class="ov-btn primary" id="checkinClaim">领取今日奖励</button>
+      <button class="ov-btn secondary" id="checkinClose">关闭</button>
+    </div>
   </div>
 </div>
 
@@ -323,139 +375,313 @@ var LEVELS=[
 ];
 
 /* ============================================================
-   萌宠图鉴配置
+   萌宠图鉴 — 14 种宠物，8 级合并链
+   每级 1-2 个物种，含 N/R/SR/SSR 稀有度
    ============================================================ */
-var SPECIES=[
- {name:"宠物蛋",body:"#FFF8E7",ear:"none",accent:"#D4C4A8",face:"egg",rare:false,emoji:"🥚"},
- {name:"小鸡",body:"#FFD54F",ear:"tuft",accent:"#FF9800",face:"beak",rare:false,emoji:"🐤"},
- {name:"小鸭",body:"#FFE082",ear:"none",accent:"#FFB74D",face:"bill",rare:false,emoji:"🦆"},
- {name:"兔兔",body:"#F8BBD0",ear:"long",accent:"#EC407A",face:"bunny",rare:false,emoji:"🐰"},
- {name:"猫猫",body:"#FFCC80",ear:"tri",accent:"#EF6C00",face:"whisk",rare:false,emoji:"🐱"},
- {name:"狗狗",body:"#BCAAA4",ear:"flop",accent:"#6D4C41",face:"nose",rare:false,emoji:"🐶"},
- {name:"熊猫",body:"#FFFFFF",ear:"tri",accent:"#37474F",face:"panda",rare:false,emoji:"🐼"},
- {name:"麒麟",body:"#FFD700",ear:"tri",accent:"#FF6F00",face:"horn",rare:true,emoji:"🦄"},
-];
+var SPECIES_BY_LEVEL={
+ 1:[{name:"宠物蛋",body:"#FFF8E7",accent:"#D4C4A8",rarity:"N",emoji:"🥚"}],
+ 2:[
+  {name:"小鸡",body:"#FFD54F",accent:"#FF9800",rarity:"N",emoji:"🐤"},
+  {name:"仓鼠",body:"#FFCCBC",accent:"#FF8A65",rarity:"R",emoji:"🐹"}
+ ],
+ 3:[
+  {name:"兔兔",body:"#F8BBD0",accent:"#EC407A",rarity:"N",emoji:"🐰"},
+  {name:"小鸭",body:"#FFE082",accent:"#FFB74D",rarity:"N",emoji:"🦆"}
+ ],
+ 4:[
+  {name:"猫猫",body:"#FFCC80",accent:"#EF6C00",rarity:"N",emoji:"🐱"},
+  {name:"狐狸",body:"#FFAB91",accent:"#D84315",rarity:"R",emoji:"🦊"}
+ ],
+ 5:[
+  {name:"狗狗",body:"#BCAAA4",accent:"#6D4C41",rarity:"N",emoji:"🐶"},
+  {name:"熊猫",body:"#FFFFFF",accent:"#37474F",rarity:"N",emoji:"🐼"}
+ ],
+ 6:[
+  {name:"小龙",body:"#A5D6A7",accent:"#2E7D32",rarity:"N",emoji:"🐲"},
+  {name:"九尾狐",body:"#CE93D8",accent:"#7B1FA2",rarity:"R",emoji:"🦊"}
+ ],
+ 7:[{name:"独角兽",body:"#B3E5FC",accent:"#0288D1",rarity:"SR",emoji:"🦄"}],
+ 8:[
+  {name:"麒麟",body:"#FFD700",accent:"#FF6F00",rarity:"SR",emoji:"🦄"},
+  {name:"龙王",body:"#E040FB",accent:"#4A148C",rarity:"SSR",emoji:"🐉"}
+ ]
+};
 
-/* 买蛋价格: 10 * 1.5^(n-1) */
-function buyPrice(n){return Math.round(10*Math.pow(1.5,n-1))}
+function getSpecies(lv,sp){
+ sp=sp||0;
+ var arr=SPECIES_BY_LEVEL[lv]||SPECIES_BY_LEVEL[1];
+ return arr[sp]||arr[0];
+}
+
+/* 买蛋价格: 10 * 1.25^(n-1) — 曲线放缓，防止后期买不起 */
+function buyPrice(n){return Math.round(10*Math.pow(1.25,n-1))}
+
+/* 合成时 roll 物种变种：N=79.5% R=18% SR=2% SSR=0.5% */
+function rollSpecies(lv){
+ var arr=SPECIES_BY_LEVEL[lv];
+ if(!arr||arr.length<=1)return 0;
+ var r=Math.random();
+ if(r<0.005){var i=arr.findIndex(function(s){return s.rarity==="SSR"});if(i>=0)return i}
+ if(r<0.025){var i=arr.findIndex(function(s){return s.rarity==="SR"});if(i>=0)return i}
+ if(r<0.205){var i=arr.findIndex(function(s){return s.rarity==="R"});if(i>=0)return i}
+ var nIdx=arr.findIndex(function(s){return s.rarity==="N"});
+ return nIdx>=0?nIdx:0;
+}
+
+/* 签到奖励 */
+var CHECKIN_REWARDS=[50,80,120,150,200,300,500];
+var CHECKIN_EMOJIS=["💰","💰","💰","💰","💰","💰","🎁"];
 
 /* ============================================================
-   宠物 SVG 绘制（日系治愈风，大眼+腮红+细节）
+   宠物 SVG 绘制 — 每个物种独特造型
    ============================================================ */
-function petSVG(lv){
-  var s=SPECIES[lv-1], W=100, H=100;
-  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
-  /* 阴影 */
-  svg+='<ellipse cx="50" cy="90" rx="22" ry="4" fill="rgba(93,64,55,0.12)"/>';
-  /* 耳朵(画在身体后) */
-  if(s.ear==="long"){
-    svg+='<ellipse cx="36" cy="28" rx="9" ry="22" fill="'+s.accent+'" transform="rotate(-15 36 28)"/>';
-    svg+='<ellipse cx="64" cy="28" rx="9" ry="22" fill="'+s.accent+'" transform="rotate(15 64 28)"/>';
-    svg+='<ellipse cx="36" cy="30" rx="5" ry="16" fill="'+shade(s.body,-15)+'" transform="rotate(-15 36 30)" opacity=".5"/>';
-    svg+='<ellipse cx="64" cy="30" rx="5" ry="16" fill="'+shade(s.body,-15)+'" transform="rotate(15 64 30)" opacity=".5"/>';
-  }else if(s.ear==="tri"){
-    svg+='<path d="M33 32 L28 10 L50 24 Z" fill="'+s.accent+'"/>';
-    svg+='<path d="M67 32 L72 10 L50 24 Z" fill="'+s.accent+'"/>';
-    svg+='<path d="M35 28 L32 14 L46 22 Z" fill="'+shade(s.body,15)+'" opacity=".5"/>';
-    svg+='<path d="M65 28 L68 14 L54 22 Z" fill="'+shade(s.body,15)+'" opacity=".5"/>';
-  }else if(s.ear==="flop"){
-    svg+='<ellipse cx="32" cy="38" rx="12" ry="18" fill="'+s.accent+'" transform="rotate(-20 32 38)"/>';
-    svg+='<ellipse cx="68" cy="38" rx="12" ry="18" fill="'+s.accent+'" transform="rotate(20 68 38)"/>';
-  }else if(s.ear==="tuft"){
-    svg+='<path d="M44 22 Q50 14 56 22" stroke="'+s.accent+'" stroke-width="3" fill="none" stroke-linecap="round"/>';
-  }
-  /* 身体 */
-  if(lv===1){
-    /* 蛋 */
-    svg+='<ellipse cx="50" cy="56" rx="24" ry="30" fill="'+s.body+'" stroke="'+shade(s.body,-20)+'" stroke-width="2"/>';
-    svg+='<circle cx="42" cy="48" r="2.5" fill="'+s.accent+'" opacity=".4"/>';
-    svg+='<circle cx="58" cy="62" r="2" fill="'+s.accent+'" opacity=".4"/>';
-    svg+='<circle cx="48" cy="70" r="1.5" fill="'+s.accent+'" opacity=".3"/>';
-    svg+='<path d="M47 32 Q50 35 53 32" stroke="'+shade(s.body,-25)+'" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  }else{
-    svg+='<circle cx="50" cy="56" r="30" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>';
-    /* 腹部 */
-    svg+='<ellipse cx="50" cy="60" rx="18" ry="16" fill="'+shade(s.body,20)+'" opacity=".6"/>';
-  }
-  /* 眼睛 */
-  if(s.face==="panda"){
-    svg+='<ellipse cx="40" cy="52" rx="9" ry="8" fill="#37474F" opacity=".3"/>';
-    svg+='<ellipse cx="60" cy="52" rx="9" ry="8" fill="#37474F" opacity=".3"/>';
-  }
-  svg+='<circle cx="40" cy="52" r="6" fill="#3E2723"/>';
-  svg+='<circle cx="42" cy="50" r="2.5" fill="#fff"/>';
-  svg+='<circle cx="38" cy="54" r="1.2" fill="#fff" opacity=".6"/>';
-  svg+='<circle cx="60" cy="52" r="6" fill="#3E2723"/>';
-  svg+='<circle cx="62" cy="50" r="2.5" fill="#fff"/>';
-  svg+='<circle cx="58" cy="54" r="1.2" fill="#fff" opacity=".6"/>';
-  /* 腮红 */
-  svg+='<circle cx="32" cy="62" r="4.5" fill="#FFAB91" opacity=".55"/>';
-  svg+='<circle cx="68" cy="62" r="4.5" fill="#FFAB91" opacity=".55"/>';
-  /* 面部特征 */
-  if(s.face==="beak"){
-    svg+='<path d="M45 62 L50 70 L55 62 Z" fill="#FF8F00" stroke="#E65100" stroke-width="1"/>';
-  }else if(s.face==="bill"){
-    svg+='<ellipse cx="50" cy="65" rx="8" ry="5" fill="#FF9800"/>';
-    svg+='<line x1="42" y1="65" x2="58" y2="65" stroke="#E65100" stroke-width="1"/>';
-  }else if(s.face==="bunny"){
-    svg+='<ellipse cx="50" cy="64" rx="3" ry="2.5" fill="#F48FB1"/>';
-    svg+='<path d="M47 64 Q50 67 53 64" stroke="#EC407A" stroke-width="1" fill="none"/>';
-  }else if(s.face==="whisk"){
-    svg+='<line x1="26" y1="60" x2="38" y2="58" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
-    svg+='<line x1="26" y1="65" x2="38" y2="62" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
-    svg+='<line x1="74" y1="60" x2="62" y2="58" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
-    svg+='<line x1="74" y1="65" x2="62" y2="62" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>';
-    svg+='<ellipse cx="50" cy="63" rx="3" ry="2.5" fill="#6D4C41"/>';
-  }else if(s.face==="nose"){
-    svg+='<ellipse cx="50" cy="62" rx="5" ry="4" fill="#4E342E"/>';
-    svg+='<circle cx="48" cy="61" r="1.5" fill="#fff" opacity=".4"/>';
-  }else if(s.face==="panda"){
-    svg+='<ellipse cx="50" cy="62" rx="4" ry="3" fill="#37474F"/>';
-  }else if(s.face==="horn"){
-    /* 麒麟角 */
-    svg+='<path d="M48 26 L44 6 L60 20 Z" fill="#FFF3E0" stroke="#E0A800" stroke-width="1.5"/>';
-    svg+='<path d="M44 6 L52 12 L48 26 Z" fill="#FFE082" opacity=".5"/>';
-    /* 鬃毛火焰 */
-    svg+='<path d="M25 18 Q35 8 42 20" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>';
-    svg+='<path d="M75 18 Q65 8 58 20" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>';
-    svg+='<path d="M20 38 Q28 30 36 36" stroke="#FF8A65" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
-    svg+='<path d="M80 38 Q72 30 64 36" stroke="#FF8A65" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
-  }
-  /* 稀有光环 */
-  if(s.rare){
-    svg+='<circle cx="78" cy="28" r="3" fill="#FFF176" opacity=".8"/>';
-    svg+='<circle cx="76" cy="26" r="1.5" fill="#fff" opacity=".9"/>';
-    svg+='<circle cx="22" cy="42" r="2.5" fill="#FFF176" opacity=".6"/>';
-    svg+='<circle cx="84" cy="52" r="2" fill="#FFF176" opacity=".5"/>';
-  }
-  /* 等级配件: Lv5+ 蝴蝶结, Lv6+ 围巾, Lv7 竹叶, Lv8 皇冠 */
-  if(lv>=5&&lv<8){
-    svg+='<path d="M38 38 Q42 34 46 38 Q42 42 38 38 Z" fill="#FF5277" opacity=".8"/>';
-    svg+='<path d="M62 38 Q58 34 54 38 Q58 42 62 38 Z" fill="#FF5277" opacity=".8"/>';
-    svg+='<circle cx="50" cy="38" r="3" fill="#FF5277"/>';
-  }
-  if(lv>=6&&lv<8){
-    svg+='<path d="M35 76 Q50 80 65 76" stroke="#4CAF50" stroke-width="4" fill="none" stroke-linecap="round"/>';
-  }
-  if(lv===7){
-    svg+='<path d="M70 72 Q76 66 80 68 Z" fill="#4CAF50" opacity=".8"/>';
-  }
-  if(lv===8){
-    svg+='<path d="M40 16 L44 8 L48 14 L52 8 L56 14 L60 8 L60 16 Z" fill="#FFD700" stroke="#FF8F00" stroke-width="1.5"/>';
-    svg+='<circle cx="50" cy="12" r="2" fill="#E91E63"/>';
-  }
-  svg+='</svg>';
-  return svg;
+function petSVG(lv,sp){
+ sp=sp||0;
+ var s=getSpecies(lv,sp);
+ var p=[];
+
+ p.push('<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">');
+ p.push('<ellipse cx="50" cy="90" rx="22" ry="4" fill="rgba(93,64,55,0.12)"/>');
+
+ /* 稀有度光环 */
+ if(s.rarity==="SSR"){
+  p.push('<circle cx="50" cy="56" r="38" fill="none" stroke="#FFD700" stroke-width="1" opacity=".25"/>');
+  p.push('<circle cx="50" cy="56" r="34" fill="none" stroke="#FFD700" stroke-width=".5" opacity=".15"/>');
+ }else if(s.rarity==="SR"){
+  p.push('<circle cx="50" cy="56" r="36" fill="none" stroke="#CE93D8" stroke-width="1" opacity=".2"/>');
+ }else if(s.rarity==="R"){
+  p.push('<circle cx="50" cy="56" r="34" fill="none" stroke="#64B5F6" stroke-width=".5" opacity=".15"/>');
+ }
+
+ var nm=s.name;
+
+ if(nm==="宠物蛋"){
+  p.push('<ellipse cx="50" cy="56" rx="24" ry="30" fill="'+s.body+'" stroke="'+shade(s.body,-20)+'" stroke-width="2"/>');
+  p.push('<circle cx="42" cy="48" r="2.5" fill="'+s.accent+'" opacity=".4"/>');
+  p.push('<circle cx="58" cy="62" r="2" fill="'+s.accent+'" opacity=".4"/>');
+  p.push('<circle cx="48" cy="70" r="1.5" fill="'+s.accent+'" opacity=".3"/>');
+  p.push('<path d="M47 32 Q50 35 53 32" stroke="'+shade(s.body,-25)+'" stroke-width="1.5" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M40 40 L44 44 L42 48" stroke="'+shade(s.body,-20)+'" stroke-width=".8" fill="none" opacity=".3"/>');
+ }
+ else if(nm==="小鸡"){
+  p.push('<path d="M44 22 Q50 12 56 22" stroke="'+s.accent+'" stroke-width="3" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M48 20 Q50 16 52 20" stroke="'+shade(s.accent,-20)+'" stroke-width="2" fill="none" stroke-linecap="round"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="60" rx="16" ry="14" fill="'+shade(s.body,20)+'" opacity=".6"/>');
+  p.push('<ellipse cx="24" cy="58" rx="6" ry="10" fill="'+shade(s.body,-10)+'" transform="rotate(-20 24 58)"/>');
+  p.push('<ellipse cx="76" cy="58" rx="6" ry="10" fill="'+shade(s.body,-10)+'" transform="rotate(20 76 58)"/>');
+ }
+ else if(nm==="仓鼠"){
+  p.push('<circle cx="34" cy="34" r="7" fill="'+s.accent+'"/>');
+  p.push('<circle cx="66" cy="34" r="7" fill="'+s.accent+'"/>');
+  p.push('<circle cx="34" cy="34" r="4" fill="'+shade(s.accent,20)+'" opacity=".6"/>');
+  p.push('<circle cx="66" cy="34" r="4" fill="'+shade(s.accent,20)+'" opacity=".6"/>');
+  p.push('<ellipse cx="50" cy="56" rx="30" ry="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<circle cx="28" cy="58" r="10" fill="'+shade(s.body,15)+'" opacity=".5"/>');
+  p.push('<circle cx="72" cy="58" r="10" fill="'+shade(s.body,15)+'" opacity=".5"/>');
+ }
+ else if(nm==="兔兔"){
+  p.push('<ellipse cx="36" cy="24" rx="7" ry="22" fill="'+s.accent+'" transform="rotate(-12 36 24)"/>');
+  p.push('<ellipse cx="64" cy="24" rx="7" ry="22" fill="'+s.accent+'" transform="rotate(12 64 24)"/>');
+  p.push('<ellipse cx="36" cy="26" rx="4" ry="16" fill="'+shade(s.body,-10)+'" transform="rotate(-12 36 26)" opacity=".5"/>');
+  p.push('<ellipse cx="64" cy="26" rx="4" ry="16" fill="'+shade(s.body,-10)+'" transform="rotate(12 64 26)" opacity=".5"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="60" rx="16" ry="14" fill="'+shade(s.body,20)+'" opacity=".6"/>');
+  p.push('<circle cx="82" cy="60" r="5" fill="#FFFFFF" opacity=".8"/>');
+ }
+ else if(nm==="小鸭"){
+  p.push('<ellipse cx="50" cy="58" rx="28" ry="26" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="62" rx="16" ry="14" fill="'+shade(s.body,20)+'" opacity=".5"/>');
+  p.push('<path d="M22 56 Q30 48 38 56 Q34 62 28 62 Z" fill="'+shade(s.body,-10)+'" opacity=".4"/>');
+ }
+ else if(nm==="猫猫"){
+  p.push('<path d="M30 34 L24 12 L46 26 Z" fill="'+s.accent+'"/>');
+  p.push('<path d="M70 34 L76 12 L54 26 Z" fill="'+s.accent+'"/>');
+  p.push('<path d="M32 30 L28 16 L44 24 Z" fill="'+shade(s.body,15)+'" opacity=".5"/>');
+  p.push('<path d="M68 30 L72 16 L56 24 Z" fill="'+shade(s.body,15)+'" opacity=".5"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="60" rx="16" ry="14" fill="'+shade(s.body,20)+'" opacity=".6"/>');
+  p.push('<path d="M80 62 Q90 52 88 42" stroke="'+s.body+'" stroke-width="6" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M80 62 Q90 52 88 42" stroke="'+shade(s.body,-15)+'" stroke-width="2" fill="none" stroke-linecap="round" opacity=".4"/>');
+ }
+ else if(nm==="狐狸"){
+  p.push('<path d="M28 36 L22 8 L44 28 Z" fill="'+s.accent+'"/>');
+  p.push('<path d="M72 36 L78 8 L56 28 Z" fill="'+s.accent+'"/>');
+  p.push('<path d="M28 32 L26 16 L40 26 Z" fill="#2B1006" opacity=".6"/>');
+  p.push('<path d="M72 32 L74 16 L60 26 Z" fill="#2B1006" opacity=".6"/>');
+  p.push('<ellipse cx="50" cy="58" rx="26" ry="24" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="62" rx="14" ry="12" fill="#FFE0B2" opacity=".5"/>');
+  p.push('<path d="M78 64 Q92 58 90 44 L86 46 Q88 54 80 60 Z" fill="'+s.accent+'"/>');
+  p.push('<ellipse cx="89" cy="46" rx="5" ry="4" fill="#FFFFFF" opacity=".8"/>');
+ }
+ else if(nm==="狗狗"){
+  p.push('<ellipse cx="28" cy="42" rx="12" ry="20" fill="'+s.accent+'" transform="rotate(-15 28 42)"/>');
+  p.push('<ellipse cx="72" cy="42" rx="12" ry="20" fill="'+s.accent+'" transform="rotate(15 72 42)"/>');
+  p.push('<ellipse cx="28" cy="44" rx="8" ry="14" fill="'+shade(s.accent,-20)+'" transform="rotate(-15 28 44)" opacity=".4"/>');
+  p.push('<ellipse cx="72" cy="44" rx="8" ry="14" fill="'+shade(s.accent,-20)+'" transform="rotate(15 72 44)" opacity=".4"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="60" rx="16" ry="14" fill="'+shade(s.body,20)+'" opacity=".6"/>');
+  p.push('<circle cx="38" cy="48" r="5" fill="'+s.accent+'" opacity=".3"/>');
+  p.push('<circle cx="64" cy="68" r="4" fill="'+s.accent+'" opacity=".25"/>');
+ }
+ else if(nm==="熊猫"){
+  p.push('<circle cx="32" cy="32" r="8" fill="'+s.accent+'"/>');
+  p.push('<circle cx="68" cy="32" r="8" fill="'+s.accent+'"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="#E0E0E0" stroke-width="2.5"/>');
+  p.push('<ellipse cx="40" cy="52" rx="8" ry="9" fill="#37474F" opacity=".8" transform="rotate(-15 40 52)"/>');
+  p.push('<ellipse cx="60" cy="52" rx="8" ry="9" fill="#37474F" opacity=".8" transform="rotate(15 60 52)"/>');
+  p.push('<rect x="80" y="48" width="3" height="20" rx="1" fill="#4CAF50" transform="rotate(15 80 58)"/>');
+  p.push('<rect x="78" y="52" width="5" height="2" fill="#388E3C" transform="rotate(15 80 53)"/>');
+  p.push('<rect x="78" y="60" width="5" height="2" fill="#388E3C" transform="rotate(15 80 61)"/>');
+ }
+ else if(nm==="小龙"){
+  p.push('<path d="M40 28 Q36 14 42 18" stroke="'+s.accent+'" stroke-width="3" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M60 28 Q64 14 58 18" stroke="'+s.accent+'" stroke-width="3" fill="none" stroke-linecap="round"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="60" rx="16" ry="14" fill="'+shade(s.body,20)+'" opacity=".6"/>');
+  p.push('<path d="M22 50 Q14 42 18 38 Q26 42 28 50 Z" fill="'+s.accent+'" opacity=".7"/>');
+  p.push('<path d="M78 50 Q86 42 82 38 Q74 42 72 50 Z" fill="'+s.accent+'" opacity=".7"/>');
+  p.push('<path d="M44 64 Q50 68 56 64" stroke="'+shade(s.body,-20)+'" stroke-width="1" fill="none"/>');
+  p.push('<path d="M46 68 Q50 71 54 68" stroke="'+shade(s.body,-20)+'" stroke-width="1" fill="none"/>');
+ }
+ else if(nm==="九尾狐"){
+  p.push('<path d="M28 36 L22 8 L44 28 Z" fill="'+s.accent+'"/>');
+  p.push('<path d="M72 36 L78 8 L56 28 Z" fill="'+s.accent+'"/>');
+  p.push('<path d="M28 32 L26 16 L40 26 Z" fill="#FFD700" opacity=".3"/>');
+  p.push('<path d="M72 32 L74 16 L60 26 Z" fill="#FFD700" opacity=".3"/>');
+  p.push('<ellipse cx="50" cy="58" rx="26" ry="24" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="62" rx="14" ry="12" fill="'+shade(s.body,25)+'" opacity=".4"/>');
+  p.push('<path d="M80 60 Q92 54 90 46" stroke="'+s.body+'" stroke-width="5" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M82 66 Q94 64 92 58" stroke="'+s.body+'" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>');
+  p.push('<path d="M80 72 Q90 74 88 68" stroke="'+s.body+'" stroke-width="3" fill="none" stroke-linecap="round" opacity=".5"/>');
+  p.push('<circle cx="40" cy="52" r="1.5" fill="#FFD700" opacity=".6"/>');
+  p.push('<circle cx="60" cy="52" r="1.5" fill="#FFD700" opacity=".6"/>');
+ }
+ else if(nm==="独角兽"){
+  p.push('<path d="M50 20 L46 0 L54 0 Z" fill="#FFF3E0" stroke="#FFB300" stroke-width="1.5"/>');
+  p.push('<path d="M50 4 Q48 8 50 12 Q52 8 50 4" stroke="#FFB300" stroke-width="1" fill="none"/>');
+  p.push('<path d="M22 40 Q12 30 18 22 Q28 28 30 40 Z" fill="#F8BBD0" opacity=".8"/>');
+  p.push('<path d="M78 40 Q88 30 82 22 Q72 28 70 40 Z" fill="#B3E5FC" opacity=".8"/>');
+  p.push('<path d="M24 50 Q14 46 18 38 Q28 42 30 50 Z" fill="#CE93D8" opacity=".6"/>');
+  p.push('<path d="M76 50 Q86 46 82 38 Q72 42 70 50 Z" fill="#C8E6C9" opacity=".6"/>');
+  p.push('<circle cx="50" cy="56" r="28" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="60" rx="16" ry="14" fill="#FFFFFF" opacity=".4"/>');
+ }
+ else if(nm==="麒麟"){
+  p.push('<path d="M48 24 L44 4 L60 18 Z" fill="#FFF3E0" stroke="#E0A800" stroke-width="1.5"/>');
+  p.push('<path d="M44 4 L52 10 L48 24 Z" fill="#FFE082" opacity=".5"/>');
+  p.push('<path d="M22 20 Q30 8 38 20" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M78 20 Q70 8 62 20" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M18 40 Q26 30 34 38" stroke="#FF8A65" stroke-width="2.5" fill="none" stroke-linecap="round"/>');
+  p.push('<path d="M82 40 Q74 30 66 38" stroke="#FF8A65" stroke-width="2.5" fill="none" stroke-linecap="round"/>');
+  p.push('<circle cx="50" cy="56" r="30" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="62" rx="16" ry="14" fill="#FFA000" opacity=".3"/>');
+  p.push('<path d="M42 62 Q46 66 50 62 Q54 66 58 62" stroke="#E65100" stroke-width="1" fill="none" opacity=".4"/>');
+ }
+ else if(nm==="龙王"){
+  p.push('<path d="M38 28 Q28 14 34 10 Q40 16 42 26" fill="'+s.accent+'" stroke="'+shade(s.accent,-20)+'" stroke-width="1"/>');
+  p.push('<path d="M62 28 Q72 14 66 10 Q60 16 58 26" fill="'+s.accent+'" stroke="'+shade(s.accent,-20)+'" stroke-width="1"/>');
+  p.push('<path d="M38 20 L42 10 L46 16 L50 8 L54 16 L58 10 L62 20 Z" fill="#FFD700" stroke="#FF8F00" stroke-width="1.5"/>');
+  p.push('<circle cx="50" cy="14" r="2" fill="#E91E63"/>');
+  p.push('<path d="M36 60 Q24 58 20 52" stroke="#E040FB" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/>');
+  p.push('<path d="M64 60 Q76 58 80 52" stroke="#E040FB" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/>');
+  p.push('<circle cx="50" cy="56" r="30" fill="'+s.body+'" stroke="'+shade(s.body,-15)+'" stroke-width="2.5"/>');
+  p.push('<ellipse cx="50" cy="62" rx="16" ry="14" fill="'+shade(s.body,25)+'" opacity=".3"/>');
+  p.push('<path d="M42 64 Q46 68 50 64 Q54 68 58 64" stroke="'+shade(s.accent,-10)+'" stroke-width="1" fill="none"/>');
+  p.push('<circle cx="50" cy="78" r="4" fill="#FFD700" opacity=".8"/>');
+  p.push('<circle cx="50" cy="78" r="2" fill="#FFFFFF" opacity=".9"/>');
+ }
+
+ /* 眼睛 */
+ if(nm==="狐狸"||nm==="九尾狐"){
+  p.push('<ellipse cx="40" cy="52" rx="6" ry="5" fill="#3E2723"/>');
+  p.push('<circle cx="42" cy="50" r="2" fill="#fff"/>');
+  p.push('<ellipse cx="60" cy="52" rx="6" ry="5" fill="#3E2723"/>');
+  p.push('<circle cx="62" cy="50" r="2" fill="#fff"/>');
+ }else if(nm==="熊猫"){
+  p.push('<circle cx="40" cy="52" r="5" fill="#3E2723"/>');
+  p.push('<circle cx="41" cy="50" r="2" fill="#fff"/>');
+  p.push('<circle cx="60" cy="52" r="5" fill="#3E2723"/>');
+  p.push('<circle cx="61" cy="50" r="2" fill="#fff"/>');
+ }else if(nm==="龙王"){
+  p.push('<ellipse cx="40" cy="52" rx="6" ry="4" fill="#FFD700"/>');
+  p.push('<ellipse cx="40" cy="52" rx="2" ry="4" fill="#1A0A2E"/>');
+  p.push('<ellipse cx="60" cy="52" rx="6" ry="4" fill="#FFD700"/>');
+  p.push('<ellipse cx="60" cy="52" rx="2" ry="4" fill="#1A0A2E"/>');
+ }else{
+  p.push('<circle cx="40" cy="52" r="6" fill="#3E2723"/>');
+  p.push('<circle cx="42" cy="50" r="2.5" fill="#fff"/>');
+  p.push('<circle cx="38" cy="54" r="1.2" fill="#fff" opacity=".6"/>');
+  p.push('<circle cx="60" cy="52" r="6" fill="#3E2723"/>');
+  p.push('<circle cx="62" cy="50" r="2.5" fill="#fff"/>');
+  p.push('<circle cx="58" cy="54" r="1.2" fill="#fff" opacity=".6"/>');
+ }
+
+ /* 腮红 */
+ if(nm!=="龙王"&&nm!=="麒麟"){
+  p.push('<circle cx="32" cy="62" r="4.5" fill="#FFAB91" opacity=".55"/>');
+  p.push('<circle cx="68" cy="62" r="4.5" fill="#FFAB91" opacity=".55"/>');
+ }
+
+ /* 面部特征 */
+ if(nm==="小鸡"){p.push('<path d="M45 62 L50 70 L55 62 Z" fill="#FF8F00" stroke="#E65100" stroke-width="1"/>')}
+ else if(nm==="仓鼠"){p.push('<path d="M48 62 L50 66 L52 62 Z" fill="#EC407A"/>')}
+ else if(nm==="兔兔"){p.push('<ellipse cx="50" cy="64" rx="3" ry="2.5" fill="#F48FB1"/>');p.push('<path d="M47 64 Q50 67 53 64" stroke="#EC407A" stroke-width="1" fill="none"/>')}
+ else if(nm==="小鸭"){p.push('<ellipse cx="50" cy="65" rx="8" ry="5" fill="#FF9800"/>');p.push('<line x1="42" y1="65" x2="58" y2="65" stroke="#E65100" stroke-width="1"/>')}
+ else if(nm==="猫猫"){p.push('<line x1="26" y1="60" x2="38" y2="58" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>');p.push('<line x1="26" y1="65" x2="38" y2="62" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>');p.push('<line x1="74" y1="60" x2="62" y2="58" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>');p.push('<line x1="74" y1="65" x2="62" y2="62" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>');p.push('<ellipse cx="50" cy="63" rx="3" ry="2.5" fill="#6D4C41"/>')}
+ else if(nm==="狐狸"){p.push('<path d="M46 62 L50 66 L54 62 Z" fill="#1A0A06"/>')}
+ else if(nm==="狗狗"){p.push('<ellipse cx="50" cy="62" rx="5" ry="4" fill="#4E342E"/>');p.push('<circle cx="48" cy="61" r="1.5" fill="#fff" opacity=".4"/>')}
+ else if(nm==="熊猫"){p.push('<ellipse cx="50" cy="62" rx="4" ry="3" fill="#37474F"/>')}
+ else if(nm==="小龙"){p.push('<path d="M46 62 L50 68 L54 62 Z" fill="#2E7D32"/>')}
+ else if(nm==="九尾狐"){p.push('<path d="M46 62 L50 66 L54 62 Z" fill="#4A148C"/>')}
+ else if(nm==="独角兽"){p.push('<ellipse cx="50" cy="64" rx="3" ry="2.5" fill="#F48FB1"/>');p.push('<path d="M47 64 Q50 67 53 64" stroke="#EC407A" stroke-width="1" fill="none"/>')}
+ else if(nm==="麒麟"){p.push('<ellipse cx="50" cy="62" rx="4" ry="3" fill="#FF6F00"/>')}
+ else if(nm==="龙王"){p.push('<path d="M44 62 Q50 70 56 62" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round"/>')}
+
+ /* 稀有度粒子 */
+ if(s.rarity==="SSR"){
+  p.push('<circle cx="78" cy="28" r="3" fill="#FFD700" opacity=".9"/>');
+  p.push('<circle cx="76" cy="26" r="1.5" fill="#fff" opacity=".9"/>');
+  p.push('<circle cx="22" cy="42" r="2.5" fill="#FFD700" opacity=".7"/>');
+  p.push('<circle cx="84" cy="52" r="2" fill="#FFD700" opacity=".6"/>');
+  p.push('<circle cx="20" cy="64" r="2" fill="#FFD700" opacity=".5"/>');
+  p.push('<circle cx="82" cy="72" r="1.5" fill="#FFD700" opacity=".4"/>');
+ }else if(s.rarity==="SR"){
+  p.push('<circle cx="78" cy="28" r="2.5" fill="#CE93D8" opacity=".8"/>');
+  p.push('<circle cx="22" cy="42" r="2" fill="#CE93D8" opacity=".6"/>');
+  p.push('<circle cx="84" cy="52" r="1.5" fill="#CE93D8" opacity=".5"/>');
+ }else if(s.rarity==="R"){
+  p.push('<circle cx="80" cy="30" r="2" fill="#64B5F6" opacity=".6"/>');
+  p.push('<circle cx="20" cy="50" r="1.5" fill="#64B5F6" opacity=".4"/>');
+ }
+
+ /* 等级配件: Lv5+ 蝴蝶结, Lv6+ 围巾, Lv8 皇冠 */
+ if(lv>=5&&lv<8&&s.rarity==="N"){
+  p.push('<path d="M38 38 Q42 34 46 38 Q42 42 38 38 Z" fill="#FF5277" opacity=".8"/>');
+  p.push('<path d="M62 38 Q58 34 54 38 Q58 42 62 38 Z" fill="#FF5277" opacity=".8"/>');
+  p.push('<circle cx="50" cy="38" r="3" fill="#FF5277"/>');
+ }
+ if(lv>=6&&lv<8&&s.rarity==="N"){
+  p.push('<path d="M35 76 Q50 80 65 76" stroke="#4CAF50" stroke-width="4" fill="none" stroke-linecap="round"/>');
+ }
+ if(lv===8){
+  p.push('<path d="M40 16 L44 8 L48 14 L52 8 L56 14 L60 8 L60 16 Z" fill="#FFD700" stroke="#FF8F00" stroke-width="1.5"/>');
+  p.push('<circle cx="50" cy="12" r="2" fill="#E91E63"/>');
+ }
+
+ p.push('</svg>');
+ return p.join('');
 }
+
 /* 颜色明暗调整 */
 function shade(hex,amt){
-  var c=hex.replace('#','');
-  if(c.length===3)c=c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
-  var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
-  r=Math.max(0,Math.min(255,r+amt));
-  g=Math.max(0,Math.min(255,g+amt));
-  b=Math.max(0,Math.min(255,b+amt));
-  return'#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+ var c=hex.replace('#','');
+ if(c.length===3)c=c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+ var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
+ r=Math.max(0,Math.min(255,r+amt));
+ g=Math.max(0,Math.min(255,g+amt));
+ b=Math.max(0,Math.min(255,b+amt));
+ return'#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
 }
 
 /* ============================================================
@@ -471,7 +697,7 @@ var CHAPTERS=[
 ];
 
 /* 顾客配置 */
-var CUSTOMERS=["👧","👦","🧑","👩","👨","👵","👴","🧓","👲","👳","👸","🤴","🦸","🧙","🧚","🧝","🧞","🧜","🧛","🧟","👻","🤖","👽","🐱","🐶","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐸","🐧","🦄","🐙","🦋","🐝","🐞","🦉","🦜","🦢","🦩","🕊️","🦔"," hedgehog"];
+var CUSTOMERS=["👧","👦","🧑","👩","👨","👵","👴","🧓","👲","👳","👸","🤴","🦸","🧙","🧚","🧝","🧞","🧜","🧛","🧟","👻","🤖","👽","🐱","🐶","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐸","🐧","🦄","🐙","🦋","🐝","🐞","🦉","🦜","🦢","🦩","🕊️","🦔"];
 var ORDER_TEXTS=["我想要可爱的萌宠！","给我来几只萌宠吧～","听说你家的萌宠最棒了！","想要毛茸茸的小可爱！","拜托了，我等很久了！","这次要更稀有的哦～","只有你能帮我了！","拜托拜托～"];
 
 /* ============================================================
@@ -493,7 +719,7 @@ var state={
   level:null,
   fromWin:false,
 };
-var save=loadSave()||{progress:0,stars:newArray(66,0),seen:newArray(6,false)};
+var save=loadSave()||{progress:0,stars:newArray(66,0),seen:newArray(6,false),wallet:0,checkIn:{lastClaim:null,streak:0},collection:{}};
 
 function newArray(n,v){var a=[];for(var i=0;i<n;i++)a.push(v);return a}
 
@@ -501,7 +727,17 @@ function newArray(n,v){var a=[];for(var i=0;i<n;i++)a.push(v);return a}
    存档
    ============================================================ */
 function loadSave(){
-  try{var r=localStorage.getItem("petShopSave");if(!r)return null;var d=JSON.parse(r);if(!d.stars||d.stars.length<66)d.stars=newArray(66,0);if(!d.seen||d.seen.length<6)d.seen=newArray(6,false);return d}catch(e){return null}
+  try{
+    var r=localStorage.getItem("petShopSave");
+    if(!r)return null;
+    var d=JSON.parse(r);
+    if(!d.stars||d.stars.length<66)d.stars=newArray(66,0);
+    if(!d.seen||d.seen.length<6)d.seen=newArray(6,false);
+    if(typeof d.wallet!=="number")d.wallet=0;
+    if(!d.checkIn)d.checkIn={lastClaim:null,streak:0};
+    if(!d.collection)d.collection={};
+    return d;
+  }catch(e){return null}
 }
 function saveSave(){
   try{localStorage.setItem("petShopSave",JSON.stringify(save))}catch(e){}
@@ -536,9 +772,22 @@ function showGame(){
    菜单渲染
    ============================================================ */
 function renderMenu(){
-  /* 吉祥物 */
   var mascot=document.getElementById("menuMascot");
-  mascot.innerHTML=petSVG(4)+petSVG(8);
+  mascot.innerHTML=petSVG(4,0)+petSVG(8,0);
+
+  document.getElementById("walletVal").textContent=fmt(save.wallet||0);
+
+  var checkinBtn=document.getElementById("btnCheckin");
+  var dot=checkinBtn.querySelector(".dot");
+  if(!dot&&!canClaimCheckin()){
+    /* 已领取，不显示红点 */
+  }else if(canClaimCheckin()&&!dot){
+    var d=document.createElement("span");
+    d.className="dot";
+    checkinBtn.appendChild(d);
+  }else if(!canClaimCheckin()&&dot){
+    dot.remove();
+  }
 
   var html="";
   CHAPTERS.forEach(function(ch){
@@ -574,7 +823,6 @@ function renderMenu(){
   });
   document.getElementById("chapterList").innerHTML=html;
 
-  /* 绑定点击 */
   document.querySelectorAll(".lv-btn.unlocked").forEach(function(b){
     b.addEventListener("click",function(){
       var idx=parseInt(b.dataset.level,10);
@@ -593,22 +841,22 @@ function startLevel(idx){
   state.goals=processGoals(lv.g);
   state.maxSteps=lv.s;
   state.steps=lv.s;
-  state.coins=lv.co;
+  state.coins=lv.co+(save.wallet||0);
+  save.wallet=0;
+  saveSave();
   state.bought=0;
   state.halfPrice=false;
   state.selected=null;
   state.adUsed={freeEgg:false,plusSteps:false};
 
-  /* 初始化棋盘 */
   state.board=[];
   state.nextId=1;
   var pets=[];
   Object.keys(lv.b).forEach(function(lvStr){
     var lvNum=parseInt(lvStr);
     var cnt=lv.b[lvStr];
-    for(var i=0;i<cnt;i++)pets.push({id:state.nextId++,lv:lvNum});
+    for(var i=0;i<cnt;i++)pets.push({id:state.nextId++,lv:lvNum,sp:0});
   });
-  /* 随机打乱 */
   for(var i=pets.length-1;i>0;i--){
     var j=Math.floor(Math.random()*(i+1));
     var t=pets[i];pets[i]=pets[j];pets[j]=t;
@@ -616,7 +864,6 @@ function startLevel(idx){
   while(pets.length<MAX_SLOTS)pets.push(null);
   state.board=pets;
 
-  /* 检查是否需要显示章节剧情 */
   var ch=lv.ch;
   if(!save.seen[ch-1]){
     showStory(ch);
@@ -658,43 +905,41 @@ function renderGame(){
   if(state.steps<=2)stepsBadge.classList.add("low");
   else stepsBadge.classList.remove("low");
 
-  /* 订单面板 */
   var customerIdx=(state.levelIdx*7)%CUSTOMERS.length;
   document.getElementById("orderAvatar").textContent=CUSTOMERS[customerIdx];
   document.getElementById("orderWho").textContent="顾客";
   document.getElementById("orderWant").textContent=randItem(ORDER_TEXTS);
 
-  /* 订单目标 */
   var goalsHtml="";
   var goalStatus=getGoalStatus();
   state.goals.forEach(function(g,i){
     var st=goalStatus[i];
     var cls=st.fulfilled?"done":"";
     goalsHtml+='<div class="goal-item '+cls+'">';
-    goalsHtml+='<div class="gi-pet">'+petSVG(g.lv)+'</div>';
+    goalsHtml+='<div class="gi-pet">'+petSVG(g.lv,0)+'</div>';
     goalsHtml+='<span class="gi-count">'+st.have+'/'+g.count+'</span>';
     if(st.fulfilled)goalsHtml+='<span class="gi-check">✓</span>';
     goalsHtml+='</div>';
   });
   document.getElementById("orderGoals").innerHTML=goalsHtml;
 
-  /* 棋盘 */
   var boardHtml="";
   for(var i=0;i<MAX_SLOTS;i++){
     var p=state.board[i];
     if(p){
       var sel=state.selected===p.id?" sel":"";
       var glow="";
-      /* 检查是否是目标宠物 */
       if(state.goals.some(function(g,idx){var st=getGoalStatus();return g.lv===p.lv&&!st[idx].fulfilled}))glow=" goal-glow";
-      boardHtml+='<div class="slot pet'+sel+glow+'" data-id="'+p.id+'">'+petSVG(p.lv)+'<span class="lv-badge">Lv'+p.lv+'</span></div>';
+      var sp=getSpecies(p.lv,p.sp);
+      var rarCls=sp.rarity!=="N"?" rarity-"+sp.rarity:"";
+      var rarTag=sp.rarity!=="N"?'<span class="rarity-tag '+sp.rarity+'">'+sp.rarity+'</span>':"";
+      boardHtml+='<div class="slot pet'+sel+glow+rarCls+'" data-id="'+p.id+'">'+petSVG(p.lv,p.sp)+rarTag+'<span class="lv-badge">Lv'+p.lv+'</span></div>';
     }else{
       boardHtml+='<div class="slot empty"></div>';
     }
   }
   document.getElementById("board").innerHTML=boardHtml;
 
-  /* 操作栏 */
   var price=buyPrice(state.bought+1);
   if(state.halfPrice)price=Math.round(price/2);
   document.getElementById("btnBuySub").textContent=price+"💰";
@@ -712,7 +957,6 @@ function renderGame(){
     deliverBtn.querySelector(".sub").textContent="需凑齐萌宠";
   }
 
-  /* 广告按钮 */
   var ad=lv.ad||{};
   var adEggBtn=document.getElementById("btnAdEgg");
   if(ad.fe&&!state.adUsed.freeEgg){
@@ -781,13 +1025,14 @@ function onBoardClick(e){
 
 function mergePets(a,b){
   var newLv=a.lv+1;
+  var newSp=rollSpecies(newLv);
   var idxA=state.board.indexOf(a);
   var idxB=state.board.indexOf(b);
   state.board[idxA]=null;
-  state.board[idxB]={id:state.nextId++,lv:newLv};
+  state.board[idxB]={id:state.nextId++,lv:newLv,sp:newSp};
   state.selected=null;
   state.steps--;
-  /* 合成动画 */
+
   var slot=document.querySelector('.slot.pet[data-id="'+state.board[idxB].id+'"]');
   if(slot){
     slot.classList.add("merge-in");
@@ -795,7 +1040,22 @@ function mergePets(a,b){
     spawnParticles(rect.left+rect.width/2,rect.top+rect.height/2);
   }
   if(navigator.vibrate)navigator.vibrate(15);
-  toast("合成了 "+SPECIES[newLv-1].name+(newLv===8?" ★ 传说！":""));
+
+  var sp=getSpecies(newLv,newSp);
+  var msg="合成了 "+sp.name;
+  if(sp.rarity==="SSR")msg="★★★ SSR 龙王！"+sp.name;
+  else if(sp.rarity==="SR")msg="★ SR "+sp.name+"！";
+  else if(sp.rarity==="R")msg="R "+sp.name+"！";
+  if(newLv===8)msg+=" ★ 传说！";
+  toast(msg);
+
+  /* 图鉴收录 */
+  var key=newLv+"-"+newSp;
+  if(sp.rarity!=="N"&&!save.collection[key]){
+    save.collection[key]=true;
+    saveSave();
+  }
+
   checkLose();
 }
 
@@ -805,11 +1065,10 @@ function buyEgg(){
   if(state.coins<price){toast("金币不够");return}
   if(!hasEmptySlot()){toast("棋盘满了，先合成吧");return}
   var idx=findEmptySlot();
-  state.board[idx]={id:state.nextId++,lv:1};
+  state.board[idx]={id:state.nextId++,lv:1,sp:0};
   state.coins-=price;
   state.bought++;
   state.steps--;
-  /* 动画 */
   var slot=document.querySelectorAll(".slot.pet")[idx];
   if(slot)slot.classList.add("merge-in");
   toast("买到一个宠物蛋");
@@ -822,7 +1081,6 @@ function buyEgg(){
    ============================================================ */
 function completeOrder(){
   if(!canCompleteOrder()){toast("还缺少萌宠哦");return}
-  /* 移除目标宠物 */
   state.goals.forEach(function(g){
     var removed=0;
     for(var i=0;i<MAX_SLOTS&&removed<g.count;i++){
@@ -832,7 +1090,6 @@ function completeOrder(){
       }
     }
   });
-  /* 计算星级 */
   var ratio=state.steps/state.maxSteps;
   var stars=1;
   if(ratio>=state.level.s3)stars=3;
@@ -844,38 +1101,40 @@ function completeOrder(){
    胜利/失败
    ============================================================ */
 function showWin(stars){
-  /* 更新存档 */
+  var firstClear=(save.stars[state.levelIdx]||0)===0;
   if(stars>(save.stars[state.levelIdx]||0)){
     save.stars[state.levelIdx]=stars;
   }
   if(state.levelIdx>=save.progress&&state.levelIdx<65){
     save.progress=state.levelIdx+1;
   }
-  saveSave();
 
-  /* 计算奖励 */
   var baseReward=10*state.level.ch;
   var starBonus=5*stars;
   var reward=baseReward+starBonus;
-  if(state.level.t==="F")reward*=2;/* 缓冲关双倍 */
+  if(state.level.t==="F")reward*=2;
+  if(firstClear)reward=Math.round(reward*1.5);
+  reward=Math.max(reward,5);
+
+  save.wallet=(save.wallet||0)+reward;
+  saveSave();
 
   document.getElementById("resultTitle").textContent="订单完成！";
   document.getElementById("resultTitle").className="result-title win";
-  document.getElementById("resultSub").textContent=SPECIES[state.goals[0].lv-1].name+" 已送达～";
-  /* 星星动画 */
+  document.getElementById("resultSub").textContent=getSpecies(state.goals[0].lv,0).name+" 已送达～";
   var starHtml="";
   for(var i=0;i<3;i++)starHtml+='<div class="star-slot" data-i="'+i+'">★</div>';
   document.getElementById("starRow").innerHTML=starHtml;
-  /* 逐颗点亮 */
   setTimeout(function(){
     document.querySelectorAll(".star-slot").forEach(function(s,i){
       if(i<stars)setTimeout(function(){s.classList.add("on")},i*300);
     });
   },200);
 
-  document.getElementById("resultReward").innerHTML='获得金币 <span class="coins">+'+reward+'</span>';
+  var rewardHtml='获得金币 <span class="coins">+'+reward+'</span>';
+  if(firstClear)rewardHtml+='<span class="first-clear">首通奖励 +50%！</span>';
+  document.getElementById("resultReward").innerHTML=rewardHtml;
 
-  /* 按钮 */
   var btnsHtml="";
   var ad=state.level.ad||{};
   if(ad.dr){
@@ -888,13 +1147,13 @@ function showWin(stars){
   btnsHtml+='<button class="ov-btn secondary" id="btnMenu">菜单</button>';
   document.getElementById("resultBtns").innerHTML=btnsHtml;
 
-  /* 绑定按钮 */
   if(ad.dr){
     document.getElementById("btnDoubleReward").addEventListener("click",function(){
       showAd(function(){
-        reward*=2;
-        document.getElementById("resultReward").innerHTML='获得金币 <span class="coins">+'+reward+'</span>';
-        floatCoins(reward);
+        save.wallet=(save.wallet||0)+reward;
+        saveSave();
+        document.getElementById("resultReward").innerHTML='获得金币 <span class="coins">+'+(reward*2)+'</span>';
+        floatCoins(reward*2);
         document.getElementById("btnDoubleReward").disabled=true;
         document.getElementById("btnDoubleReward").textContent="已领取";
       });
@@ -921,7 +1180,6 @@ function showWin(stars){
 
 function checkLose(){
   if(state.steps<=0&&!canCompleteOrder()){
-    /* 失败 */
     setTimeout(function(){
       document.getElementById("resultTitle").textContent="步数用完了";
       document.getElementById("resultTitle").className="result-title lose";
@@ -989,12 +1247,11 @@ function showAd(cb){
   sk.onclick=function(){ov.classList.remove("show");cb()};
 }
 
-/* 广告: 免费蛋 */
 document.getElementById("btnAdEgg").addEventListener("click",function(){
   showAd(function(){
     if(!hasEmptySlot()){toast("棋盘满了");return}
     var idx=findEmptySlot();
-    state.board[idx]={id:state.nextId++,lv:1};
+    state.board[idx]={id:state.nextId++,lv:1,sp:0};
     state.adUsed.freeEgg=true;
     var slot=document.querySelectorAll(".slot.pet")[idx];
     if(slot){
@@ -1007,14 +1264,97 @@ document.getElementById("btnAdEgg").addEventListener("click",function(){
   });
 });
 
-/* 广告: +步数(主动使用) */
 document.getElementById("btnAdSteps").addEventListener("click",function(){
   showAd(function(){
     state.adUsed.plusSteps=true;
     state.steps+=state.level.ad.ps;
-    toast="+"+state.level.ad.ps+" 步！";
+    toast("+"+state.level.ad.ps+" 步！");
     renderGame();
   });
+});
+
+/* ============================================================
+   每日签到
+   ============================================================ */
+function todayStr(){
+  var d=new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+
+function canClaimCheckin(){
+  var ci=save.checkIn||{lastClaim:null,streak:0};
+  return ci.lastClaim!==todayStr();
+}
+
+function claimCheckin(){
+  var ci=save.checkIn||{lastClaim:null,streak:0};
+  if(ci.lastClaim===todayStr()){toast("今天已经签到了");return}
+
+  var yesterday=new Date();
+  yesterday.setDate(yesterday.getDate()-1);
+  var yStr=yesterday.getFullYear()+"-"+(yesterday.getMonth()+1)+"-"+yesterday.getDate();
+
+  if(ci.lastClaim===yStr){
+    ci.streak=(ci.streak||0)+1;
+    if(ci.streak>7)ci.streak=1;
+  }else{
+    ci.streak=1;
+  }
+
+  var dayIdx=ci.streak-1;
+  var reward=CHECKIN_REWARDS[dayIdx];
+  save.wallet=(save.wallet||0)+reward;
+  ci.lastClaim=todayStr();
+  save.checkIn=ci;
+  saveSave();
+
+  toast("签到Day"+ci.streak+"！获得 "+reward+" 金币");
+  renderCheckin();
+  renderMenu();
+  floatCoins(reward);
+}
+
+function renderCheckin(){
+  var ci=save.checkIn||{lastClaim:null,streak:0};
+  var claimedToday=ci.lastClaim===todayStr();
+  var displayStreak=claimedToday?ci.streak:(ci.streak||0)+1;
+  if(displayStreak>7)displayStreak=1;
+
+  var html="";
+  for(var i=0;i<7;i++){
+    var day=i+1;
+    var claimed=ci.streak>=day&&claimedToday&&ci.streak===day;
+    var isToday=day===displayStreak&&!claimedToday;
+    var cls=claimed?"claimed":"";
+    if(isToday)cls+=" today";
+    html+='<div class="checkin-day '+cls+'">';
+    html+='<div class="cd-label">Day'+day+'</div>';
+    html+='<div class="cd-emoji">'+CHECKIN_EMOJIS[i]+'</div>';
+    html+='<div class="cd-reward">'+CHECKIN_REWARDS[i]+'💰</div>';
+    if(claimed)html+='<div class="cd-check">✓</div>';
+    html+='</div>';
+  }
+  document.getElementById("checkinCalendar").innerHTML=html;
+
+  var claimBtn=document.getElementById("checkinClaim");
+  if(claimedToday){
+    claimBtn.textContent="今日已领取";
+    claimBtn.disabled=true;
+  }else{
+    claimBtn.textContent="领取Day"+displayStreak+"奖励";
+    claimBtn.disabled=false;
+  }
+}
+
+document.getElementById("btnCheckin").addEventListener("click",function(){
+  renderCheckin();
+  document.getElementById("ovCheckin").classList.add("show");
+});
+document.getElementById("checkinClaim").addEventListener("click",function(){
+  claimCheckin();
+});
+document.getElementById("checkinClose").addEventListener("click",function(){
+  document.getElementById("ovCheckin").classList.remove("show");
 });
 
 /* ============================================================
